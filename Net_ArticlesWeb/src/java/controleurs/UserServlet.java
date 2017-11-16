@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
 
 /**
@@ -19,7 +20,7 @@ import outils.Utilitaire;
  * @author Epulapp
  */
 public class UserServlet extends HttpServlet {
-    
+
     private String erreur = "";
 
     /**
@@ -42,6 +43,8 @@ public class UserServlet extends HttpServlet {
             demande = getDemande(request);
             if (demande.equalsIgnoreCase("login.cpt")) {
                 vueReponse = login(request);
+            } else if (demande.equalsIgnoreCase("connecter.cpt")) {
+                vueReponse = connecter(request);
             }
 
         } catch (Exception e) {
@@ -74,6 +77,39 @@ public class UserServlet extends HttpServlet {
             return (vueReponse);
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    /**
+     * Vérifie que l'utilisateur a saisi le bon login et mot de passe
+     *
+     * @param request
+     * @return String page de redirection
+     * @throws Exception
+     */
+    private String connecter(HttpServletRequest request) throws Exception {
+        String login, pwd;
+        String vueReponse = "/login.jsp";
+        erreur = "";
+        try {
+            login = request.getParameter("txtLogin");
+            pwd = request.getParameter("txtPwd");
+            //Utilisateur user = utilisateurF.lireLogin(login);
+            if (user != null) {
+                if (user.getPwd().equals(pwd)) {
+                    vueReponse = "/accueil.jsp";
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("userId", user.getIdUtilisateur());
+                    request.setAttribute("userR", user);
+                    request.setAttribute("categorieR", user.getCategorie());
+                } else {
+                    erreur = "Login ou mot de passe inconnus !";
+                }
+            }
+        } catch (Exception e) {
+            erreur = e.getMessage();
+        } finally {
+            return (vueReponse);
         }
     }
 
