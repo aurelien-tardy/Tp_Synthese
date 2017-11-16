@@ -52,7 +52,7 @@ public class UserServlet extends HttpServlet {
             // Par défaut la page à afficher est index.jsp
             // sauf s'il faut rediriger vers une fonction
             RequestDispatcher dsp = request.getRequestDispatcher("/index.jsp");
-            if (vueReponse.contains(".user")) {
+            if (vueReponse.contains(".cpt")) {
                 dsp = request.getRequestDispatcher(vueReponse);
             }
             dsp.forward(request, response);
