@@ -7,12 +7,15 @@ package controleurs;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import outils.Utilitaire;
+import session.ArticleFacade;
+
 
 /**
  *
@@ -20,6 +23,9 @@ import outils.Utilitaire;
  */
 public class NetArticlesServlet extends HttpServlet {
     
+    @EJB
+    ArticleFacade articleFacade;
+
     private String erreur = "";
 
     /**
@@ -41,9 +47,10 @@ public class NetArticlesServlet extends HttpServlet {
         try {
             demande = getDemande(request);
             if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                vueReponse = "/login.jsp";
+                articleFacade.getLastArticle();
+                request.setAttribute("articleR", articleFacade.getLastArticle());
+                vueReponse = "/detailArticle.jsp";
             }
-
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
         } finally {

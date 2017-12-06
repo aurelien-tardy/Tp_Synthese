@@ -23,7 +23,6 @@ public class Client {
     private Integer credits;
     private String loginClient;
     private String pwdClient;
-    private List<Achete> acheteList;
     private Categorie categorie;
 
     public Client() {
@@ -85,14 +84,6 @@ public class Client {
 
     public void setPwdClient(String pwdClient) {
         this.pwdClient = pwdClient;
-    }
-
-    public List<Achete> getAcheteList() {
-        return acheteList;
-    }
-
-    public void setAcheteList(List<Achete> acheteList) {
-        this.acheteList = acheteList;
     }
 
     public Categorie getCategorie() {

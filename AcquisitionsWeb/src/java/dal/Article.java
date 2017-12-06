@@ -23,8 +23,6 @@ public class Article {
     private BigDecimal prix;
     private Date dateArticle;
     private String fichier;
-    private List<Redige> redigeList;
-    private List<Achete> acheteList;
     private Domaine domaine;
 
     public Article() {
@@ -85,22 +83,6 @@ public class Article {
 
     public void setFichier(String fichier) {
         this.fichier = fichier;
-    }
-
-    public List<Redige> getRedigeList() {
-        return redigeList;
-    }
-
-    public void setRedigeList(List<Redige> redigeList) {
-        this.redigeList = redigeList;
-    }
-
-    public List<Achete> getAcheteList() {
-        return acheteList;
-    }
-
-    public void setAcheteList(List<Achete> acheteList) {
-        this.acheteList = acheteList;
     }
 
     public Domaine getDomaine() {
