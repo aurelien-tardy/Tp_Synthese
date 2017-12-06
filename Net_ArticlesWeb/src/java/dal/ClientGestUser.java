@@ -31,7 +31,7 @@ public class ClientGestUser {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/GestUserRest/webresources";
+    private static final String BASE_URI = "http://localhost:8080/Net_ArticlesRest/webresources";
 
     public ClientGestUser() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

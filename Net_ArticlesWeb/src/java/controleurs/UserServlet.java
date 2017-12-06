@@ -63,6 +63,7 @@ public class UserServlet extends HttpServlet {
                 dsp = request.getRequestDispatcher(vueReponse);
             }
             dsp.forward(request, response);
+            
         }
 
     }
@@ -101,7 +102,7 @@ public class UserServlet extends HttpServlet {
             Client client = clientF.lireLogin(login);
             if (client != null) {
                 if (client.getPwdClient().equals(pwd)) {
-                    vueReponse = "/accueil.jsp";
+                    vueReponse = "/listeAchats.jsp";
                     HttpSession session = request.getSession(true);
                     session.setAttribute("clientId", client.getIdClient());
                     request.setAttribute("clientR", client);
