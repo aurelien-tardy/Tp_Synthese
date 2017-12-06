@@ -5,30 +5,19 @@
  */
 package dal;
 
-import java.io.Serializable;
+
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+
 
 /**
  *
  * @author Epulapp
  */
-@Embeddable
-public class DroitsPK implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id_auteur")
+public class DroitsPK {
+
     private int idAuteur;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "date_trimestre")
-    @Temporal(TemporalType.DATE)
+
     private Date dateTrimestre;
 
     public DroitsPK() {
@@ -83,5 +72,5 @@ public class DroitsPK implements Serializable {
     public String toString() {
         return "dal.DroitsPK[ idAuteur=" + idAuteur + ", dateTrimestre=" + dateTrimestre + " ]";
     }
-    
+
 }

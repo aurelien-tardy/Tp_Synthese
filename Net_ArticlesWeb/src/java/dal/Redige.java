@@ -5,45 +5,19 @@
  */
 package dal;
 
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
  * @author Epulapp
  */
-@Entity
-@Table(name = "redige")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Redige.findAll", query = "SELECT r FROM Redige r")
-    , @NamedQuery(name = "Redige.findByIdArticle", query = "SELECT r FROM Redige r WHERE r.redigePK.idArticle = :idArticle")
-    , @NamedQuery(name = "Redige.findByIdAuteur", query = "SELECT r FROM Redige r WHERE r.redigePK.idAuteur = :idAuteur")
-    , @NamedQuery(name = "Redige.findByPart", query = "SELECT r FROM Redige r WHERE r.part = :part")})
-public class Redige implements Serializable {
+
+public class Redige {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
     protected RedigePK redigePK;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "part")
     private int part;
-    @JoinColumn(name = "id_article", referencedColumnName = "id_article", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
     private Article article;
-    @JoinColumn(name = "id_auteur", referencedColumnName = "id_auteur", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
     private Auteur auteur;
 
     public Redige() {

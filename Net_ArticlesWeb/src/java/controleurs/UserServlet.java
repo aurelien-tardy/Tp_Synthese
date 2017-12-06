@@ -5,6 +5,7 @@
  */
 package controleurs;
 
+import dal.Client;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.ClientFacade;
 
 /**
  *
@@ -22,6 +24,8 @@ import outils.Utilitaire;
 public class UserServlet extends HttpServlet {
 
     private String erreur = "";
+    
+    private ClientFacade clientF = new ClientFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -89,19 +93,19 @@ public class UserServlet extends HttpServlet {
      */
     private String connecter(HttpServletRequest request) throws Exception {
         String login, pwd;
-        String vueReponse = "/login.jsp";
+        String vueReponse = "/index.jsp";
         erreur = "";
         try {
             login = request.getParameter("txtLogin");
             pwd = request.getParameter("txtPwd");
-            //Utilisateur user = utilisateurF.lireLogin(login);
-            if (user != null) {
-                if (user.getPwd().equals(pwd)) {
+            Client client = clientF.lireLogin(login);
+            if (client != null) {
+                if (client.getPwdClient().equals(pwd)) {
                     vueReponse = "/accueil.jsp";
                     HttpSession session = request.getSession(true);
-                    session.setAttribute("userId", user.getIdUtilisateur());
-                    request.setAttribute("userR", user);
-                    request.setAttribute("categorieR", user.getCategorie());
+                    session.setAttribute("clientId", client.getIdClient());
+                    request.setAttribute("clientR", client);
+                    request.setAttribute("categorieR", client.getCategorie());
                 } else {
                     erreur = "Login ou mot de passe inconnus !";
                 }

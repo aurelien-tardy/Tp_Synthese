@@ -5,43 +5,18 @@
  */
 package dal;
 
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
  * @author Epulapp
  */
-@Entity
-@Table(name = "cles")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Cles.findAll", query = "SELECT c FROM Cles c")
-    , @NamedQuery(name = "Cles.findByIdCle", query = "SELECT c FROM Cles c WHERE c.idCle = :idCle")
-    , @NamedQuery(name = "Cles.findByValCle", query = "SELECT c FROM Cles c WHERE c.valCle = :valCle")
-    , @NamedQuery(name = "Cles.findByLibCle", query = "SELECT c FROM Cles c WHERE c.libCle = :libCle")})
-public class Cles implements Serializable {
+
+public class Cles{
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "id_cle")
     private String idCle;
-    @Column(name = "val_cle")
     private Integer valCle;
-    @Size(max = 80)
-    @Column(name = "lib_cle")
     private String libCle;
 
     public Cles() {

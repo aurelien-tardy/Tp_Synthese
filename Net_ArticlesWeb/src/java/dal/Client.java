@@ -5,69 +5,25 @@
  */
 package dal;
 
-import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+
+
 
 /**
  *
  * @author Epulapp
  */
-@Entity
-@Table(name = "client")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Client.findAll", query = "SELECT c FROM Client c")
-    , @NamedQuery(name = "Client.findByIdClient", query = "SELECT c FROM Client c WHERE c.idClient = :idClient")
-    , @NamedQuery(name = "Client.findByIdentiteClient", query = "SELECT c FROM Client c WHERE c.identiteClient = :identiteClient")
-    , @NamedQuery(name = "Client.findByAdresseClient", query = "SELECT c FROM Client c WHERE c.adresseClient = :adresseClient")
-    , @NamedQuery(name = "Client.findByCredits", query = "SELECT c FROM Client c WHERE c.credits = :credits")
-    , @NamedQuery(name = "Client.findByLoginClient", query = "SELECT c FROM Client c WHERE c.loginClient = :loginClient")
-    , @NamedQuery(name = "Client.findByPwdClient", query = "SELECT c FROM Client c WHERE c.pwdClient = :pwdClient")})
-public class Client implements Serializable {
+public class Client {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id_client")
+
     private Integer idClient;
-    @Size(max = 80)
-    @Column(name = "identite_client")
     private String identiteClient;
-    @Size(max = 200)
-    @Column(name = "adresse_client")
     private String adresseClient;
-    @Column(name = "credits")
     private Integer credits;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "login_client")
     private String loginClient;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "pwd_client")
     private String pwdClient;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     private List<Achete> acheteList;
-    @JoinColumn(name = "id_categorie", referencedColumnName = "id_categorie")
-    @ManyToOne(optional = false)
     private Categorie categorie;
 
     public Client() {
@@ -131,7 +87,6 @@ public class Client implements Serializable {
         this.pwdClient = pwdClient;
     }
 
-    @XmlTransient
     public List<Achete> getAcheteList() {
         return acheteList;
     }
@@ -172,5 +127,5 @@ public class Client implements Serializable {
     public String toString() {
         return "dal.Client[ idClient=" + idClient + " ]";
     }
-    
+
 }

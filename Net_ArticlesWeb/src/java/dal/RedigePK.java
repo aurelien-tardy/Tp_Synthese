@@ -15,16 +15,11 @@ import javax.validation.constraints.NotNull;
  *
  * @author Epulapp
  */
-@Embeddable
-public class RedigePK implements Serializable {
+public class RedigePK {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id_article")
+
     private int idArticle;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id_auteur")
+
     private int idAuteur;
 
     public RedigePK() {
