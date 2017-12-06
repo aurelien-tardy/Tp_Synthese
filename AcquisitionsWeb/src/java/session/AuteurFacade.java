@@ -5,6 +5,7 @@
  */
 package session;
 
+import dal.Auteur;
 import dal.Client;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,9 +16,9 @@ import javax.persistence.PersistenceContext;
  * @author Epulapp
  */
 @Stateless
-public class ClientFacade {
+public class AuteurFacade {
     
-    private Client client;
+    private Auteur auteur;
 
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;

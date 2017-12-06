@@ -6,23 +6,25 @@
 package session;
 
 import dal.Client;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import dal.ClientGestUser;
 
 /**
  *
  * @author Epulapp
  */
-@Stateless
 public class ClientFacade {
     
     private Client client;
-
-    @PersistenceContext(unitName = "NetArticlesRestPU")
-    private EntityManager em;
-
-    protected EntityManager getEntityManager() {
-        return this.em;
+    
+    
+    
+        public Client lireLogin(String login) throws Exception {
+        try {
+            ClientGestUser clientGestUser = new ClientGestUser();
+            return clientGestUser.connecter(Client.class, login);
+        } catch (Exception e) {
+            throw e;
+        }
     }
+    
 }
