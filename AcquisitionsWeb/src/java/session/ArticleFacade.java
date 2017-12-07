@@ -6,24 +6,20 @@
 package session;
 
 import dal.Article;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import dal.ClientGestUser;
 
 /**
  *
  * @author Epulapp
  */
 public class ArticleFacade {
-    
-    @PersistenceContext(unitName="NetArticlesRestPU")
-    EntityManager em;
-        
-        public Article getLastArticle() throws Exception {
+
+    public Article getLastArticle() throws Exception {
         try {
-            return (Article) em.createNamedQuery("Article.getLast").getSingleResult();
+            ClientGestUser clientGestUser = new ClientGestUser();
+            return clientGestUser.getLastArticle();
         } catch (Exception e) {
             throw e;
         }
     }
-    
 }

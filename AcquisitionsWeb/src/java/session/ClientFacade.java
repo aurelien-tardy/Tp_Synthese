@@ -7,6 +7,7 @@ package session;
 
 import dal.Client;
 import dal.ClientGestUser;
+import javax.ejb.Stateless;
 
 /**
  *

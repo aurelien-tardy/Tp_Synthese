@@ -16,17 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import outils.Utilitaire;
 import session.ArticleFacade;
 
-
 /**
  *
  * @author Epulapp
  */
 public class NetArticlesServlet extends HttpServlet {
-    
-    @EJB
-    ArticleFacade articleFacade;
 
     private String erreur = "";
+    ArticleFacade articleFacade = new ArticleFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,9 +44,7 @@ public class NetArticlesServlet extends HttpServlet {
         try {
             demande = getDemande(request);
             if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                articleFacade.getLastArticle();
-                request.setAttribute("articleR", articleFacade.getLastArticle());
-                vueReponse = "/detailArticle.jsp";
+                vueReponse = "/login.jsp";
             }
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
@@ -64,7 +59,6 @@ public class NetArticlesServlet extends HttpServlet {
             }
             dsp.forward(request, response);
         }
-
     }
 
     private String getDemande(HttpServletRequest request) {
