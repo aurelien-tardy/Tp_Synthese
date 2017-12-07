@@ -6,7 +6,7 @@
 package session;
 
 import dal.Client;
-import dal.ClientGestUser;
+import dal.ClientNetArticles;
 
 /**
  *
@@ -20,7 +20,7 @@ public class ClientFacade {
     
         public Client lireLogin(String login) throws Exception {
         try {
-            ClientGestUser clientGestUser = new ClientGestUser();
+            ClientNetArticles clientGestUser = new ClientNetArticles();
             return clientGestUser.connecter(Client.class, login);
         } catch (Exception e) {
             throw e;

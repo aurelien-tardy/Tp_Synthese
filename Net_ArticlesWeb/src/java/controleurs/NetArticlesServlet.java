@@ -5,22 +5,33 @@
  */
 package controleurs;
 
+import dal.Article;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.ArticleFacade;
+import session.DomaineFacade;
 
 /**
  *
  * @author Epulapp
  */
 public class NetArticlesServlet extends HttpServlet {
-    
+
     private String erreur = "";
+
+    @EJB
+    private DomaineFacade domaineFacade;
+
+    @EJB
+    private ArticleFacade articleFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,6 +53,14 @@ public class NetArticlesServlet extends HttpServlet {
             demande = getDemande(request);
             if (demande.equalsIgnoreCase("dernierArticle.na")) {
                 vueReponse = "/login.jsp";
+            } else if (demande.equalsIgnoreCase("rechercher.na")) {
+                vueReponse = rechercherArticles(request);
+            } else if (demande.equalsIgnoreCase("listeArticlesDomaine.na")) {
+                vueReponse = listerArticleDomaine(request);
+            } else if (demande.equalsIgnoreCase("voirArticle.na")) {
+                vueReponse = voirArticle(request);
+            } else if (demande.equalsIgnoreCase("ajoutPanier.na")) {
+                vueReponse = ajoutPanier(request);
             }
 
         } catch (Exception e) {
@@ -105,5 +124,53 @@ public class NetArticlesServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private String rechercherArticles(HttpServletRequest request) throws Exception {
+        try {
+            request.setAttribute("titre", "Liste des articles d'un domaine");
+            request.setAttribute("lDomainesR", domaineFacade.getFields());
+            return "/rechercher.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String listerArticleDomaine(HttpServletRequest request) throws Exception {
+        try {
+            request.setAttribute("titre", "Liste des articles d'un domaine");
+            request.setAttribute("lDomainesR", domaineFacade.getFields());
+            if (request.getParameter("id_domaine") != null) {
+                request.setAttribute("id_domaineR", request.getParameter("id_domaine"));
+                request.setAttribute("lArticlesR", articleFacade.getArticlesByField(request.getParameter("id_domaine")));
+            } else {
+                request.setAttribute("id_domaineR", request.getParameter("cbDomaines"));
+                request.setAttribute("lArticlesR", articleFacade.getArticlesByField(request.getParameter("cbDomaines")));
+            }
+            return "/rechercher.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String voirArticle(HttpServletRequest request) throws Exception {
+        try {
+            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+            request.setAttribute("id_domaineR", article.getDomaine().getIdDomaine());
+            request.setAttribute("articleR", article);
+            return "/voirArticle.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String ajoutPanier(HttpServletRequest request) throws Exception{
+        try {
+            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+            
+            return "/panier.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
 }

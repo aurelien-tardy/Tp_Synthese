@@ -17,7 +17,7 @@
                 <td>${articleE.titre}</td>
                 <td><fmt:formatNumber currencySymbol="&euro;" type="currency" value="${articleE.prix}"/></td>  
                 <td><a href="voirArticle.na?id_article=${articleE.idArticle}">Résumé</a></td>                                     
-                <td><a href="ajoutPanier.cde?id_article=${articleE.idArticle}">Panier</a></td>                       
+                <td><a href="ajoutPanier.na?id_article=${articleE.idArticle}">Panier</a></td>                       
             </tr>
         </c:forEach>
     </tbody>

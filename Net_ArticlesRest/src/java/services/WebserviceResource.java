@@ -18,6 +18,16 @@ import javax.ws.rs.core.Response;
 import outils.Utilitaire;
 import session.ClientFacade;
 
+import dal.Article;
+import dal.Domaine;
+import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
+import session.ArticleFacade;
+import session.DomaineFacade;
+
 /**
  * REST Web Service
  *
@@ -42,6 +52,12 @@ public class WebserviceResource {
     @EJB
     private ClientFacade clientFacade;
     
+    @EJB
+    private ArticleFacade articleFacade;
+    
+    @EJB
+    private DomaineFacade domaineFacade;
+    
     @GET
     @Path("testws")
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,13 +79,53 @@ public class WebserviceResource {
         }
         return response;
     }
-   
-
-    /**
-     * PUT method for updating or creating an instance of WebserviceResource
-     *
-     * @param content representation for the resource
-     */
-//    @PUT
-//    @Consumes(MediaType.APPLICATION_JSON)
+    
+    @GET
+    @Path("getFields")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFields() throws Exception {
+        Response response = null;
+        try {
+            List<Domaine> listFields = domaineFacade.getFields();
+            GenericEntity<List<Domaine>> lFields = new GenericEntity<List<Domaine>>(listFields) {
+            };
+            response = Response.status(Response.Status.OK).entity(lFields).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    
+    @GET
+    @Path("getArticlesByField/{field}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getArticlesByField(@PathParam("field") String field) throws Exception {
+        Response response = null;
+        try {
+            List<Article> listArticles = articleFacade.getArticlesByField(Integer.parseInt(field));
+            GenericEntity<List<Article>> lArticles = new GenericEntity<List<Article>>(listArticles) {};
+            response = Response.status(Response.Status.OK).entity(lArticles).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @GET
+    @Path("getArticleById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getArticleById(@PathParam("id") String id) throws Exception {
+        Response response = null;
+        try {
+            Article article = articleFacade.getArticleById(Integer.parseInt(id));
+            response = Response.status(Response.Status.OK).entity(article).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
 }
