@@ -5,6 +5,7 @@
  */
 package services;
 
+import dal.Article;
 import dal.Client;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -13,9 +14,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import outils.Utilitaire;
+import session.ArticleFacade;
 import session.ClientFacade;
 
 /**
@@ -25,7 +28,6 @@ import session.ClientFacade;
  */
 @Path("webservice")
 public class WebserviceResource {
-
 
     /**
      * Creates a new instance of WebserviceResource
@@ -38,17 +40,35 @@ public class WebserviceResource {
      *
      * @return an instance of java.lang.String
      */
-    
     @EJB
     private ClientFacade clientFacade;
-    
+
+    @EJB
+    private ArticleFacade articleFacade;
+
     @GET
     @Path("testws")
     @Produces(MediaType.APPLICATION_JSON)
     public Response testws() throws Exception {
         return Response.status(Response.Status.OK).entity("Yop").build();
     }
-    
+
+    @GET
+    @Path("getLastArticle")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLastArticle() throws Exception {
+        Response response = null;
+        try {
+            Article article = articleFacade.getLastArticle();
+            GenericEntity<Article> articles = new GenericEntity<Article>(article){};
+            response = Response.status(Response.Status.OK).entity(articles).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+
     @GET
     @Path("getConnexion/{login}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,7 +83,6 @@ public class WebserviceResource {
         }
         return response;
     }
-   
 
     /**
      * PUT method for updating or creating an instance of WebserviceResource

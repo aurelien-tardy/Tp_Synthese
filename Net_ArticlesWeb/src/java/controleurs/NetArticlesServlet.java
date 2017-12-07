@@ -16,15 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import outils.Utilitaire;
 import session.ArticleFacade;
 
-
 /**
  *
  * @author Epulapp
  */
 public class NetArticlesServlet extends HttpServlet {
-    
-    @EJB
-    ArticleFacade articleFacade;
+
+    ArticleFacade articleFacade = new ArticleFacade();
 
     private String erreur = "";
 
@@ -46,10 +44,9 @@ public class NetArticlesServlet extends HttpServlet {
         erreur = "";
         try {
             demande = getDemande(request);
-            if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                articleFacade.getLastArticle();
+            if (demande.equalsIgnoreCase("dernierArticle.na") || demande.equalsIgnoreCase("")) {
                 request.setAttribute("articleR", articleFacade.getLastArticle());
-                vueReponse = "/detailArticle.jsp";
+                vueReponse = "/accueil.jsp";
             }
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);

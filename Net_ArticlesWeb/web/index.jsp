@@ -17,9 +17,12 @@
                 <c:if test="${pageR != null}">
                     <c:import url="${pageR}"/>
                 </c:if>
+                <c:if test="${pageR == null}">
+                    <c:import url="login.jsp"/>
+                </c:if>
                 <c:if test="${erreurR != null}">
                     <c:import url="/erreur.jsp"/>
-                </c:if>   
+                </c:if>
             </div>
         </div>
     </body>

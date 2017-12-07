@@ -11,6 +11,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import outils.Utilitaire;
 
@@ -38,6 +39,22 @@ public class ClientGestUser {
         webTarget = client.target(BASE_URI).path("webservice");
     }
 
+    public Article getLastArticle() throws Exception {
+        WebTarget resource = webTarget;
+        resource = resource.path("getLastArticle");
+        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            if (message.contains("No entity found for query")) {
+                throw new Exception("Error");
+            } else {
+                throw new Exception(message);
+            }
+        }
+        return response.readEntity(new GenericType<Article>(){});
+    }
+    
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getConnexion/{0}", new Object[]{login}));

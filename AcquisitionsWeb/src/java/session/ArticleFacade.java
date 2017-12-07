@@ -4,22 +4,26 @@
  * and open the template in the editor.
  */
 package session;
-import dal.Article;
-import dal.ClientGestUser;
 
+import dal.Article;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author Epulapp
  */
 public class ArticleFacade {
-
-    public Article getLastArticle() throws Exception {
+    
+    @PersistenceContext(unitName="NetArticlesRestPU")
+    EntityManager em;
+        
+        public Article getLastArticle() throws Exception {
         try {
-            ClientGestUser clientGestUser = new ClientGestUser();
-            return clientGestUser.getLastArticle();
+            return (Article) em.createNamedQuery("Article.getLast").getSingleResult();
         } catch (Exception e) {
             throw e;
         }
     }
+    
 }
