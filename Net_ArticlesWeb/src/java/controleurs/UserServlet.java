@@ -24,7 +24,7 @@ import session.ClientFacade;
 public class UserServlet extends HttpServlet {
 
     private String erreur = "";
-    
+
     private ClientFacade clientF = new ClientFacade();
 
     /**
@@ -49,6 +49,8 @@ public class UserServlet extends HttpServlet {
                 vueReponse = login(request);
             } else if (demande.equalsIgnoreCase("connecter.cpt")) {
                 vueReponse = connecter(request);
+            } else if (demande.equalsIgnoreCase("deconnecter.cpt")) {
+                vueReponse = deconnecter(request);
             }
 
         } catch (Exception e) {
@@ -63,7 +65,7 @@ public class UserServlet extends HttpServlet {
                 dsp = request.getRequestDispatcher(vueReponse);
             }
             dsp.forward(request, response);
-            
+
         }
 
     }
@@ -118,7 +120,20 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    private String deconnecter(HttpServletRequest request) throws Exception {
+        String vueReponse;
+        erreur = "";
+        try {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("clientId", null);
+            vueReponse = "/listeAchats.jsp";
+            return (vueReponse);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

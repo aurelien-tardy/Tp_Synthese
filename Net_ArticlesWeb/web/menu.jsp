@@ -14,7 +14,7 @@
             <div class="collapse navbar-collapse" id="navbar-collapse-target">
                 <ul class="nav navbar-nav">
                     <li><a href="listeDomaines.cde">Rechercher</a></li>                  
-                    <c:if test="${sessionScope.userId != null}">                        
+                    <c:if test="${sessionScope.clientId != null}">                        
                         <li><a href="listeAchats.cde">Mes articles</a></li>
                         <li><a href="voirCompte.cpt">Compte</a></li> 
                     </c:if>     
@@ -23,10 +23,10 @@
                     </c:if>     
                 </ul>     
                 <ul class="nav navbar-nav navbar-right"> 
-                    <c:if test="${sessionScope.userId != null}">
+                    <c:if test="${sessionScope.clientId != null}">
                         <li><a href="deconnecter.cpt">Se déconnecter</a></li>
                     </c:if>  
-                    <c:if test="${sessionScope.userId == null}">                   
+                    <c:if test="${sessionScope.clientId == null}">                   
                         <li><a href="login.cpt">Se connecter</a></li>
                     </c:if>  
                 </ul>
