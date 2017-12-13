@@ -23,7 +23,7 @@ import session.ClientFacade;
  */
 public class UserServlet extends HttpServlet {
 
-    private String erreur = "";
+    private String erreurR = "";
 
     private ClientFacade clientF = new ClientFacade();
 
@@ -42,7 +42,7 @@ public class UserServlet extends HttpServlet {
         // Si aucune demande n'est satisfaite, c'est la vue index.jsp
         // qui sera affichée
         String vueReponse = "/index.jsp";
-        erreur = "";
+        erreurR = "";
         try {
             demande = getDemande(request);
             if (demande.equalsIgnoreCase("login.cpt")) {
@@ -54,9 +54,9 @@ public class UserServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            erreur = Utilitaire.getExceptionCause(e);
+            erreurR = Utilitaire.getExceptionCause(e);
         } finally {
-            request.setAttribute("erreurR", erreur);
+            request.setAttribute("erreurR", erreurR);
             request.setAttribute("pageR", vueReponse);
             // Par défaut la page à afficher est index.jsp
             // sauf s'il faut rediriger vers une fonction
@@ -97,7 +97,7 @@ public class UserServlet extends HttpServlet {
     private String connecter(HttpServletRequest request) throws Exception {
         String login, pwd;
         String vueReponse = "/index.jsp";
-        erreur = "";
+        erreurR = "";
         try {
             login = request.getParameter("txtLogin");
             pwd = request.getParameter("txtPwd");
@@ -110,11 +110,13 @@ public class UserServlet extends HttpServlet {
                     request.setAttribute("clientR", client);
                     request.setAttribute("categorieR", client.getCategorie());
                 } else {
-                    erreur = "Login ou mot de passe inconnus !";
+                    erreurR = "Login ou mot de passe inconnus !";
+                    vueReponse = "/login.jsp";
                 }
             }
         } catch (Exception e) {
-            erreur = e.getMessage();
+            erreurR = e.getMessage();
+            vueReponse = "/login.jsp";
         } finally {
             return (vueReponse);
         }
@@ -122,7 +124,7 @@ public class UserServlet extends HttpServlet {
 
     private String deconnecter(HttpServletRequest request) throws Exception {
         String vueReponse;
-        erreur = "";
+        erreurR = "";
         try {
             HttpSession session = request.getSession(true);
             session.setAttribute("clientId", null);
