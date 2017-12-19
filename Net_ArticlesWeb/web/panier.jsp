@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="col-md-9 col-md-offset-2">
     <h1 align='center'><c:out value="${titre}"/></h1>
-    <c:if test="${sessionScope.panier != null}">
+    <c:if test="${sessionScope.panier != null && !seesionScope.panier.isEmpty()}">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>                
-                <c:forEach var="articleE" items="${lArticlesPanierR}">
+                <c:forEach var="articleE" items="${panier}">
                     <tr>
                         <td>${articleE.idArticle}</td>
                         <td>${articleE.titre}</td>
@@ -30,7 +30,11 @@
         </table>
         <div>
             <a class="btn btn-primary" href="validerPanier.cde"><span class="glyphicon glyphicon-log-in"></span> Valider panier</a>    
-        </div>      
+        </div>
+                
     </c:if>
+    <div>
+        ${alreadyExist}       
+    </div>
 </div>
 
