@@ -7,8 +7,7 @@ package controleurs;
 
 import dal.Article;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -26,7 +25,7 @@ import session.DomaineFacade;
  *
  * @author Epulapp
  */
-public class NetArticlesServlet extends HttpServlet {
+public class CommandeServlet extends HttpServlet {
 
     private String erreur = "";
 
@@ -35,7 +34,7 @@ public class NetArticlesServlet extends HttpServlet {
 
     @EJB
     private ArticleFacade articleFacade;
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -54,14 +53,12 @@ public class NetArticlesServlet extends HttpServlet {
         erreur = "";
         try {
             demande = getDemande(request);
-            if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                vueReponse = "/login.jsp";
-            } else if (demande.equalsIgnoreCase("rechercher.na")) {
-                vueReponse = rechercherArticles(request);
-            } else if (demande.equalsIgnoreCase("listeArticlesDomaine.na")) {
-                vueReponse = listerArticleDomaine(request);
-            } else if (demande.equalsIgnoreCase("voirArticle.na")) {
-                vueReponse = voirArticle(request);
+            if (demande.equalsIgnoreCase("voirPanier.cde")) {
+                vueReponse = "/panier.jsp";
+            } else if (demande.equalsIgnoreCase("ajoutPanier.cde")) {
+                vueReponse = ajoutPanier(request);
+            } else if (demande.equalsIgnoreCase("supprimerPanier.cde")) {
+                vueReponse = supprimerPanier(request);
             }
 
         } catch (Exception e) {
@@ -77,14 +74,78 @@ public class NetArticlesServlet extends HttpServlet {
             }
             dsp.forward(request, response);
         }
-
     }
-
+    
     private String getDemande(HttpServletRequest request) {
         String demande = "";
         demande = request.getRequestURI();
         demande = demande.substring(demande.lastIndexOf("/") + 1);
         return demande;
+    }
+    
+    private String ajoutPanier(HttpServletRequest request) throws Exception {
+        try {
+            HttpSession session = request.getSession();
+            List<Article> panier = null;
+            if (session.getAttribute("panier") == null) {
+                panier = new ArrayList<>();
+            } else {
+                panier = (ArrayList<Article>) session.getAttribute("panier");
+            }
+
+            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+            if (panier.size() > 0) {
+                boolean add = true;
+                for (Article art : panier) {
+                    if (article.equals(art)) {
+                        add = false;
+                    }
+                }
+
+                if (add) {
+                    panier.add(article);
+                } else {
+                    erreur = "L'article est déjà présent dans le panier";
+                }
+            } else {
+                panier.add(article);
+            }
+
+            session.setAttribute("panier", panier);
+            session.setAttribute("montantTotalR", montantTotal(panier));
+
+            return "/panier.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String supprimerPanier(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
+        Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+        int i = 0;
+        for (Article art : panier) {
+            if (article.equals(art)) {
+                panier.remove(i);
+                break;
+            } else {
+                i++;
+            }
+        }
+
+        session.setAttribute("panier", panier);
+        session.setAttribute("montantTotalR", montantTotal(panier));
+
+        return "/panier.jsp";
+    }
+
+    private int montantTotal(List<Article> panier) {
+        int total = 0;
+        for (Article art : panier) {
+            total += art.getPrix().intValue();
+        }
+        return total;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -125,44 +186,5 @@ public class NetArticlesServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private String rechercherArticles(HttpServletRequest request) throws Exception {
-        try {
-            request.setAttribute("titre", "Liste des articles d'un domaine");
-            request.setAttribute("lDomainesR", domaineFacade.getFields());
-            return "/rechercher.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    private String listerArticleDomaine(HttpServletRequest request) throws Exception {
-        try {
-            request.setAttribute("titre", "Liste des articles d'un domaine");
-            request.setAttribute("lDomainesR", domaineFacade.getFields());
-            String id = request.getParameter("cbDomaines");
-            if (id.equals("0")) {
-                request.setAttribute("id_domaineR", id);
-            } else {
-                request.setAttribute("id_domaineR", id);
-                request.setAttribute("lArticlesR", articleFacade.getArticlesByField(id));
-            }
-            
-            return "/rechercher.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    private String voirArticle(HttpServletRequest request) throws Exception {
-        try {
-            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
-            request.setAttribute("id_domaineR", article.getDomaine().getIdDomaine());
-            request.setAttribute("articleR", article);
-            return "/voirArticle.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
 
 }

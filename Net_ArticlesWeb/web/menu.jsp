@@ -13,7 +13,7 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-target">
                 <ul class="nav navbar-nav">
-                    <li><a href="listeDomaines.cde">Rechercher</a></li>                  
+                    <li><a href="rechercher.na">Rechercher</a></li>                  
                     <c:if test="${sessionScope.clientId != null}">                        
                         <li><a href="listeAchats.cde">Mes articles</a></li>
                         <li><a href="voirCompte.cpt">Compte</a></li> 
