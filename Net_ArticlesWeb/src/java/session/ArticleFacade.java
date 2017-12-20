@@ -6,6 +6,7 @@
 package session;
 
 import dal.Article;
+import dal.ClientGestUser;
 import dal.ClientNetArticles;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +49,3 @@ public class ArticleFacade {
         }
     }
 }
-
-import dal.ClientGestUser;
