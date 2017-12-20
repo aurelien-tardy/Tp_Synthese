@@ -12,6 +12,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +29,7 @@ import session.DomaineFacade;
  * @author Epulapp
  */
 public class NetArticlesServlet extends HttpServlet {
-
+    
     private String erreur = "";
 
     @EJB
@@ -54,8 +56,9 @@ public class NetArticlesServlet extends HttpServlet {
         erreur = "";
         try {
             demande = getDemande(request);
-            if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                vueReponse = "/login.jsp";
+            if (demande.equalsIgnoreCase("dernierArticle.na") || demande.equalsIgnoreCase("")) {
+                request.setAttribute("articleR", articleFacade.getLastArticle());
+                vueReponse = "/accueil.jsp";
             } else if (demande.equalsIgnoreCase("rechercher.na")) {
                 vueReponse = rechercherArticles(request);
             } else if (demande.equalsIgnoreCase("listeArticlesDomaine.na")) {
@@ -63,7 +66,6 @@ public class NetArticlesServlet extends HttpServlet {
             } else if (demande.equalsIgnoreCase("voirArticle.na")) {
                 vueReponse = voirArticle(request);
             }
-
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
         } finally {

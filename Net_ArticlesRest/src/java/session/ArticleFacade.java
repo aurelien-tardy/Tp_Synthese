@@ -64,4 +64,21 @@ public class ArticleFacade {
             throw e;
         }
     }
+
+    public Article getLastArticle() throws Exception {
+        try {
+            Date date = new Date(0);
+            List<Article> articles = em.createNamedQuery("Article.findAll").getResultList();
+            Article lastArticle = new Article();
+            lastArticle.setDateArticle(date);
+            for (Article article : articles) {
+                if(article.getDateArticle().after(lastArticle.getDateArticle())){
+                    lastArticle = article;
+                }
+            }
+            return lastArticle;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

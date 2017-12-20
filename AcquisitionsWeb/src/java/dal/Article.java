@@ -8,6 +8,7 @@ package dal;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import javax.json.JsonObject;
 
 /**
  *
@@ -87,22 +88,6 @@ public class Article {
         this.fichier = fichier;
     }
 
-    public List<Redige> getRedigeList() {
-        return redigeList;
-    }
-
-    public void setRedigeList(List<Redige> redigeList) {
-        this.redigeList = redigeList;
-    }
-
-    public List<Achete> getAcheteList() {
-        return acheteList;
-    }
-
-    public void setAcheteList(List<Achete> acheteList) {
-        this.acheteList = acheteList;
-    }
-
     public Domaine getDomaine() {
         return domaine;
     }
@@ -135,5 +120,15 @@ public class Article {
     public String toString() {
         return "dal.Article[ idArticle=" + idArticle + " ]";
     }
+    
+//    public Article setProperties(JsonObject jsonObject) throws Exception{
+//        Article article = new Article();
+//        try{
+//            article.setDateArticle(new Date(jsonObject.getString("dateArticle")));
+//            article.setDomaine(jsonObject.ge);
+//        }catch(Exception e){
+//            throw e;
+//        }
+//    }
 
 }

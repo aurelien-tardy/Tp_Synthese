@@ -5,27 +5,21 @@
  */
 package session;
 
-import dal.Client;
+import dal.Article;
 import dal.ClientGestUser;
-import javax.ejb.Stateless;
 
 /**
  *
  * @author Epulapp
  */
-public class ClientFacade {
-    
-    private Client client;
-    
-    
-    
-        public Client lireLogin(String login) throws Exception {
+public class ArticleFacade {
+
+    public Article getLastArticle() throws Exception {
         try {
             ClientGestUser clientGestUser = new ClientGestUser();
-            return clientGestUser.connecter(Client.class, login);
+            return clientGestUser.getLastArticle();
         } catch (Exception e) {
             throw e;
         }
     }
-    
 }

@@ -6,7 +6,6 @@
 package session;
 
 import dal.Auteur;
-import dal.Client;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +14,6 @@ import javax.persistence.PersistenceContext;
  *
  * @author Epulapp
  */
-@Stateless
 public class AuteurFacade {
     
     private Auteur auteur;

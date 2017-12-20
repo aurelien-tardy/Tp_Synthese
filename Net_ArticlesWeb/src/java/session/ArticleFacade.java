@@ -39,4 +39,14 @@ public class ArticleFacade {
         }
         return article;
     }
+    public Article getLastArticle() throws Exception {
+        try {
+            ClientGestUser clientGestUser = new ClientGestUser();
+            return clientGestUser.getLastArticle();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }
+
+import dal.ClientGestUser;

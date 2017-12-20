@@ -5,6 +5,7 @@
  */
 package dal;
 
+import java.util.List;
 import javax.json.JsonObject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -51,10 +52,9 @@ public class ClientGestUser {
                 throw new Exception(message);
             }
         }
-        return response.readEntity(new GenericType<Article>() {
-        });
+        return response.readEntity(new GenericType<Article>(){});
     }
-
+    
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getConnexion/{0}", new Object[]{login}));
@@ -70,6 +70,8 @@ public class ClientGestUser {
         }
         return response.readEntity(responseType);
     }
+
+    
 
     public void close() {
         client.close();

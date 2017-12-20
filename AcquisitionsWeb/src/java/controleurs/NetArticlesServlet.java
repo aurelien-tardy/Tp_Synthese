@@ -7,20 +7,23 @@ package controleurs;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import outils.Utilitaire;
+import session.ArticleFacade;
 
 /**
  *
  * @author Epulapp
  */
 public class NetArticlesServlet extends HttpServlet {
-    
+
     private String erreur = "";
+    ArticleFacade articleFacade = new ArticleFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,7 +46,6 @@ public class NetArticlesServlet extends HttpServlet {
             if (demande.equalsIgnoreCase("dernierArticle.na")) {
                 vueReponse = "/login.jsp";
             }
-
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
         } finally {
@@ -57,7 +59,6 @@ public class NetArticlesServlet extends HttpServlet {
             }
             dsp.forward(request, response);
         }
-
     }
 
     private String getDemande(HttpServletRequest request) {
