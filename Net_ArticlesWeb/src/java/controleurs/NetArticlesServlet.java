@@ -143,6 +143,10 @@ public class NetArticlesServlet extends HttpServlet {
             request.setAttribute("titre", "Liste des articles d'un domaine");
             request.setAttribute("lDomainesR", domaineFacade.getFields());
             String id = request.getParameter("cbDomaines");
+            if (request.getParameter("id_domaine") != null) {
+                id = request.getParameter("id_domaine");
+            }
+            
             if (id.equals("0")) {
                 request.setAttribute("id_domaineR", id);
             } else {
