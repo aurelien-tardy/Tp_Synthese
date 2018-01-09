@@ -22,6 +22,7 @@ import session.ArticleFacade;
 import session.ClientFacade;
 
 import dal.Article;
+import dal.Categorie;
 import dal.Domaine;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -29,6 +30,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import session.ArticleFacade;
+import session.CategorieFacade;
 import session.DomaineFacade;
 
 /**
@@ -59,12 +61,8 @@ public class WebserviceResource {
     @EJB
     private DomaineFacade domaineFacade;
     
-    @GET
-    @Path("testws")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response testws() throws Exception {
-        return Response.status(Response.Status.OK).entity("Yop").build();
-    }
+    @EJB
+    private CategorieFacade categorieFacade;
 
     @GET
     @Path("getLastArticle")
@@ -139,6 +137,40 @@ public class WebserviceResource {
         try {
             Article article = articleFacade.getArticleById(Integer.parseInt(id));
             response = Response.status(Response.Status.OK).entity(article).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @GET
+    @Path("getCategories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategories() throws Exception {
+        Response response = null;
+        try {
+            List<Categorie> listCategories = categorieFacade.getCategories();
+            GenericEntity<List<Categorie>> lCategories = new GenericEntity<List<Categorie>>(listCategories) {
+            };
+            response = Response.status(Response.Status.OK).entity(lCategories).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @POST
+    @Path("createAccount")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createAccount(Client client) throws Exception {
+        Response response = null;
+        try {
+            if (client != null) {
+                clientFacade.createAccount(client);
+                response = Response.status(Response.Status.OK).entity(client).build();
+            }
         } catch (Exception ex) {
             JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();

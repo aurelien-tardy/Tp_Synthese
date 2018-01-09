@@ -82,6 +82,15 @@ public class Client implements Serializable {
         this.loginClient = loginClient;
         this.pwdClient = pwdClient;
     }
+    
+    public Client(String loginClient, String pwdClient, String identite, String adresse, int credits, Categorie categorie) {
+        this.loginClient = loginClient;
+        this.pwdClient = pwdClient;
+        this.identiteClient = identite;
+        this.adresseClient = adresse;
+        this.credits = credits;
+        this.categorie = categorie;
+    }
 
     public Integer getIdClient() {
         return idClient;

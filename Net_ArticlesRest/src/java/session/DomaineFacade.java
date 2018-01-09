@@ -21,15 +21,9 @@ public class DomaineFacade {
 
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;
-    
-    private Domaine domaine;
 
     public EntityManager getEm() {
         return em;
-    }
-
-    public void setDomaine(Domaine domaine) {
-        this.domaine = domaine;
     }
     
     public Domaine getFieldById(int id) {

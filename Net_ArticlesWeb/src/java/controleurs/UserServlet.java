@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.CategorieFacade;
 import session.ClientFacade;
 
 /**
@@ -25,7 +26,9 @@ public class UserServlet extends HttpServlet {
 
     private String erreurR = "";
 
-    private ClientFacade clientF = new ClientFacade();
+    private final ClientFacade clientF = new ClientFacade();
+    
+    private final CategorieFacade categorieF = new CategorieFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -51,6 +54,8 @@ public class UserServlet extends HttpServlet {
                 vueReponse = connecter(request);
             } else if (demande.equalsIgnoreCase("deconnecter.cpt")) {
                 vueReponse = deconnecter(request);
+            } else if (demande.equalsIgnoreCase("creerCompte.cpt")) {
+                vueReponse = ajouterClient(request);
             }
 
         } catch (Exception e) {
@@ -134,6 +139,17 @@ public class UserServlet extends HttpServlet {
             throw e;
         }
     }
+    
+    private String ajouterClient(HttpServletRequest request) throws Exception{
+        try {
+            request.setAttribute("listeCategoriesR", categorieF.getCategories());
+            return "/client.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -173,5 +189,4 @@ public class UserServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

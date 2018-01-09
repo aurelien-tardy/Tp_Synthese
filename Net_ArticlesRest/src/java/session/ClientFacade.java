@@ -6,6 +6,7 @@
 package session;
 
 import dal.Article;
+import dal.Categorie;
 import dal.Client;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -51,6 +52,14 @@ public class ClientFacade {
             requete.setParameter("loginClient", login);
             Client client = ((Client)requete.getSingleResult());
             return client;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public void createAccount(Client client) throws Exception {
+        try {
+            em.persist(client);
         } catch (Exception e) {
             throw e;
         }

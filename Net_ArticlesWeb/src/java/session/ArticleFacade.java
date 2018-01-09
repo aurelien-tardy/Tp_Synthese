@@ -6,7 +6,6 @@
 package session;
 
 import dal.Article;
-import dal.ClientGestUser;
 import dal.ClientNetArticles;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class ArticleFacade {
     }
     public Article getLastArticle() throws Exception {
         try {
-            ClientGestUser clientGestUser = new ClientGestUser();
+            ClientNetArticles clientGestUser = new ClientNetArticles();
             return clientGestUser.getLastArticle();
         } catch (Exception e) {
             throw e;
