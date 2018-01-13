@@ -119,6 +119,18 @@ public class ClientNetArticles {
         }
         return response.readEntity(new GenericType<List<Categorie>>() {});
     }
+    
+    public Categorie getCategoryById(Integer id) throws Exception{
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("getCategoryById/{0}", new Object[]{id}));
+        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(Categorie.class);
+    }
 
     public Response createAccount(dal.Client client) throws ClientErrorException, Exception {
         Response response = webTarget.path("createAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(client, MediaType.APPLICATION_JSON), Response.class);
@@ -133,5 +145,7 @@ public class ClientNetArticles {
     public void close() {
         client.close();
     }
+
+    
 
 }

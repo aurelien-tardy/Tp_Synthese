@@ -25,4 +25,13 @@ public class CategorieFacade {
             throw e;
         }
     }
+
+    public Categorie getCategoryById(Integer id) throws Exception{
+        try {
+            ClientNetArticles clientNetArticles = new ClientNetArticles();
+            return clientNetArticles.getCategoryById(id);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,5 +28,9 @@ public class CategorieFacade {
     
     public List<Categorie> getCategories() {
         return em.createNamedQuery("Categorie.findAll").getResultList();
+    }
+    
+    public Categorie getCategoryById (Integer id) {
+        return em.find(Categorie.class, id);
     }
 }

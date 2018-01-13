@@ -55,7 +55,9 @@ public class UserServlet extends HttpServlet {
             } else if (demande.equalsIgnoreCase("deconnecter.cpt")) {
                 vueReponse = deconnecter(request);
             } else if (demande.equalsIgnoreCase("creerCompte.cpt")) {
-                vueReponse = ajouterClient(request);
+                vueReponse = createAccount(request);
+            } else if (demande.equalsIgnoreCase("validerCompte.cpt")) {
+                vueReponse = addCustomer(request);
             }
 
         } catch (Exception e) {
@@ -140,14 +142,84 @@ public class UserServlet extends HttpServlet {
         }
     }
     
-    private String ajouterClient(HttpServletRequest request) throws Exception{
+    private String createAccount(HttpServletRequest request) throws Exception{
         try {
             request.setAttribute("listeCategoriesR", categorieF.getCategories());
+            request.setAttribute("titre", "Création du compte");
             return "/client.jsp";
         } catch (Exception e) {
             throw e;
         }
     }
+    
+    private String addCustomer(HttpServletRequest request) throws Exception{
+        try {
+            Client client = new Client();
+            
+            client.setIdentiteClient(request.getParameter("txtIdentite"));
+            System.out.println(request.getParameter("txtAdresse"));
+            client.setAdresseClient(request.getParameter("txtAdresse"));
+            client.setLoginClient(request.getParameter("txtLogin"));
+            client.setPwdClient(request.getParameter("txtPwd"));
+            System.out.println(request.getParameter("txtPwd"));
+            client.setCredits(Integer.parseInt(request.getParameter("txtCredits")));
+            System.out.println(request.getParameter("cbCategories"));
+            client.setCategorie(categorieF.getCategoryById(Integer.parseInt(request.getParameter("cbCategories"))));
+            
+            clientF.createAccount(client);
+            
+            return "/accueil.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    /*private String enregistrerUtilisateur(HttpServletRequest request) throws Exception {
+               
+        String vueReponse;
+        int id_utilisateur = 0;
+        try { 
+            // Si on est en Modification ou Ajout            
+            if ( !id.equals("")){
+                id_utilisateur = Integer.parseInt(request.getParameter("id"));
+                // Affecter l'Id de l'utilisateur à Modifier
+                user.setIdUtilisateur(id_utilisateur);                
+                titre = "Modifier un profil";
+            }  
+            // Peupler les propriétés de Utilisateur            
+            user.setLogin(request.getParameter("txtLogin"));
+            user.setPwd(request.getParameter("txtPwd"));
+            user.setNom(request.getParameter("txtNom"));
+            user.setPrenom(request.getParameter("txtPrenom"));
+            user.setAdresse(request.getParameter("txtAdresse"));
+            // Instancier l'objet Categorie de la classe Utilisateur
+            user.setCategorie(categorieF.lire(Integer.parseInt(request.getParameter("lstCategories"))));
+            // Il faut conserver les valeurs pour pouvoir
+            // les réafficher en cas d'erreur
+            request.setAttribute("titre",titre);
+            request.setAttribute("userR", user);            
+            // Si on a un id c'est qu'il s'agit d'une modification
+            if (id_utilisateur > 0) {
+                utilisateurF.modifier(user);
+            } else {
+                utilisateurF.ajouter(user);
+            }
+            vueReponse = "/home.jsp";            
+            HttpSession session = request.getSession(true);
+            String userId = session.getAttribute("userId").toString();
+            // Après une modification l'administrateur accède
+            // à la liste des utilisateur alors qu'un utilisateur
+            // lambda retourne à la page home
+            if(userId.equals("1"))
+              vueReponse = "lister.user";               
+            return (vueReponse);
+        } catch (Exception e) {
+            // On reste sur la même page qui est réaffichée
+            request.setAttribute("lstCategoriesR", categorieF.lister());            
+            erreur = Utilitaire.getExceptionCause(e);
+            return "/profil.jsp";
+        }
+    }*/
     
     
 
@@ -189,4 +261,6 @@ public class UserServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    
 }

@@ -161,6 +161,21 @@ public class WebserviceResource {
         return response;
     }
     
+    @GET
+    @Path("getCategoryById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategoryById(@PathParam("id") Integer id) throws Exception {
+        Response response = null;
+        try {
+            Categorie category = categorieFacade.getCategoryById(id);
+            response = Response.status(Response.Status.OK).entity(category).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
     @POST
     @Path("createAccount")
     @Consumes(MediaType.APPLICATION_JSON)

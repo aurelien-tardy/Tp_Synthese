@@ -13,10 +13,9 @@ import javax.ws.rs.core.Response;
  *
  * @author Epulapp
  */
-public class ClientFacade {    
-    
-    
-        public Client lireLogin(String login) throws Exception {
+public class ClientFacade {
+
+    public Client lireLogin(String login) throws Exception {
         try {
             ClientNetArticles clientNetArticles = new ClientNetArticles();
             return clientNetArticles.connecter(Client.class, login);
@@ -24,7 +23,7 @@ public class ClientFacade {
             throw e;
         }
     }
-        
+
     public Response createAccount(Client client) throws Exception {
         try {
             ClientNetArticles clientNetArticles = new ClientNetArticles();
@@ -33,5 +32,5 @@ public class ClientFacade {
             throw e;
         }
     }
-    
+
 }
