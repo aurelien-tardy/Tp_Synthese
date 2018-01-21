@@ -147,8 +147,8 @@ public class CommandeServlet extends HttpServlet {
     }
     
     private String mesArticles(HttpServletRequest request) throws Exception {
-        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("id"));
-        
+        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+        request.setAttribute("lAchetesR", lAchete);
         return "/listeAchats.jsp";
     }
     
