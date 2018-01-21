@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.ArticleFacade;
 import session.CategorieFacade;
 import session.ClientFacade;
 
@@ -29,6 +30,8 @@ public class UserServlet extends HttpServlet {
     private final ClientFacade clientF = new ClientFacade();
     
     private final CategorieFacade categorieF = new CategorieFacade();
+    
+    private final ArticleFacade articleF = new ArticleFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -154,8 +157,7 @@ public class UserServlet extends HttpServlet {
     
     private String addCustomer(HttpServletRequest request) throws Exception{
         try {
-            Client client = new Client();
-            
+            Client client = clientF.getClientLastId();
             client.setIdentiteClient(request.getParameter("txtIdentite"));
             System.out.println(request.getParameter("txtAdresse"));
             client.setAdresseClient(request.getParameter("txtAdresse"));
@@ -167,7 +169,7 @@ public class UserServlet extends HttpServlet {
             client.setCategorie(categorieF.getCategoryById(Integer.parseInt(request.getParameter("cbCategories"))));
             
             clientF.createAccount(client);
-            
+            request.setAttribute("articleR", articleF.getLastArticle());
             return "/accueil.jsp";
         } catch (Exception e) {
             throw e;

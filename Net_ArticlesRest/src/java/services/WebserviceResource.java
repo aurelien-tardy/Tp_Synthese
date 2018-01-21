@@ -5,6 +5,7 @@
  */
 package services;
 
+import dal.Achete;
 import dal.Article;
 import dal.Client;
 import javax.ejb.EJB;
@@ -29,6 +30,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
+import session.AcheteFacade;
 import session.ArticleFacade;
 import session.CategorieFacade;
 import session.DomaineFacade;
@@ -63,6 +65,9 @@ public class WebserviceResource {
     
     @EJB
     private CategorieFacade categorieFacade;
+    
+    @EJB
+    private AcheteFacade acheteFacade;
 
     @GET
     @Path("getLastArticle")
@@ -188,6 +193,38 @@ public class WebserviceResource {
             }
         } catch (Exception ex) {
             JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @GET
+    @Path("getClientLastId")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getClientLastId() throws Exception {
+        Response response = null;
+        try {
+            Client newClient = new Client(clientFacade.getLastId() + 1);
+            response = Response.status(Response.Status.OK).entity(newClient).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @GET
+    @Path("getListAcheteByIdClient/{idClient}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getListAcheteByIdClient(@PathParam("idClient") Integer idClient) throws Exception {
+        Response response = null;
+        try {
+            List<Achete> listAchete = acheteFacade.getListAcheteByIdClient(idClient);
+            GenericEntity<List<Achete>> lAchete = new GenericEntity<List<Achete>>(listAchete) {
+            };
+            response = Response.status(Response.Status.OK).entity(lAchete).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
         }
         return response;

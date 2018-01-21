@@ -141,6 +141,26 @@ public class ClientNetArticles {
         }
         return response;
     }
+    
+    public dal.Client getClientLastId() throws ClientErrorException, Exception {
+        Response response = webTarget.path("getClientLastId").request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(dal.Client.class);
+    }
+    
+    public List<Achete> getListAcheteByIdClient(Integer idClient) throws ClientErrorException, Exception {
+        Response response = webTarget.path(java.text.MessageFormat.format("getListAcheteByIdClient/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(new GenericType<List<Achete>>() {});
+    }
 
     public void close() {
         client.close();

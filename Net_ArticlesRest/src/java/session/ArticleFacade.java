@@ -23,22 +23,7 @@ import javax.persistence.Query;
 public class ArticleFacade {
     
     @PersistenceContext(unitName = "NetArticlesRestPU")
-    private EntityManager em;
-    
-    @EJB
-    private DomaineFacade domaineFacade;
-    
-    private Article article;
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
-    }
-    
-    
+    private EntityManager em;   
 
     public EntityManager getEm() {
         return em;

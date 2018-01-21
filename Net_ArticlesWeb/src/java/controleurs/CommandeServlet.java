@@ -5,6 +5,7 @@
  */
 package controleurs;
 
+import dal.Achete;
 import dal.Article;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.AcheteFacade;
 import session.ArticleFacade;
 import session.DomaineFacade;
 
@@ -34,6 +36,8 @@ public class CommandeServlet extends HttpServlet {
 
     @EJB
     private ArticleFacade articleFacade;
+    
+    private AcheteFacade acheteFacade = new AcheteFacade();
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -59,6 +63,8 @@ public class CommandeServlet extends HttpServlet {
                 vueReponse = ajoutPanier(request);
             } else if (demande.equalsIgnoreCase("supprimerPanier.cde")) {
                 vueReponse = supprimerPanier(request);
+            } else if (demande.equalsIgnoreCase("listeAchats.cde")) {
+                vueReponse = mesArticles(request);
             }
 
         } catch (Exception e) {
@@ -139,7 +145,13 @@ public class CommandeServlet extends HttpServlet {
 
         return "/panier.jsp";
     }
-
+    
+    private String mesArticles(HttpServletRequest request) throws Exception {
+        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("id"));
+        
+        return "/listeAchats.jsp";
+    }
+    
     private int montantTotal(List<Article> panier) {
         int total = 0;
         for (Article art : panier) {
@@ -148,6 +160,8 @@ public class CommandeServlet extends HttpServlet {
         return total;
     }
 
+    
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -186,5 +200,4 @@ public class CommandeServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

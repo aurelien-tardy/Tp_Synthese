@@ -15,9 +15,10 @@ import javax.ws.rs.core.Response;
  */
 public class ClientFacade {
 
+    ClientNetArticles clientNetArticles = new ClientNetArticles();
+    
     public Client lireLogin(String login) throws Exception {
         try {
-            ClientNetArticles clientNetArticles = new ClientNetArticles();
             return clientNetArticles.connecter(Client.class, login);
         } catch (Exception e) {
             throw e;
@@ -26,8 +27,16 @@ public class ClientFacade {
 
     public Response createAccount(Client client) throws Exception {
         try {
-            ClientNetArticles clientNetArticles = new ClientNetArticles();
             return clientNetArticles.createAccount(client);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public Client getClientLastId() throws Exception {
+        try {
+            Client client = clientNetArticles.getClientLastId();
+            return client;
         } catch (Exception e) {
             throw e;
         }

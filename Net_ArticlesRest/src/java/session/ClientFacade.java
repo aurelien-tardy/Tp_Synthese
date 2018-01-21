@@ -57,9 +57,35 @@ public class ClientFacade {
         }
     }
     
+    public Client lireId(Integer id) throws Exception {
+        try {
+            Query requete = em.createNamedQuery("Client.findByIdClient");
+            requete.setParameter("idClient", id);
+            Client client = ((Client)requete.getSingleResult());
+            return client;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
     public void createAccount(Client client) throws Exception {
         try {
-            em.persist(client);
+                em.persist(client);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public Integer getLastId() throws Exception {
+        try {
+            Integer lastId = 0;
+            List<Client> allCustomer = em.createNamedQuery("Client.findAll").getResultList();
+            for (Client client : allCustomer) {
+                if (client.getIdClient() > lastId) {
+                    lastId = client.getIdClient();
+                }
+            }
+            return lastId;
         } catch (Exception e) {
             throw e;
         }
