@@ -8,7 +8,6 @@ package dal;
 import java.util.List;
 import javax.json.JsonObject;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
@@ -43,7 +42,7 @@ public class ClientNetArticles {
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getConnexion/{0}", new Object[]{login}));
-        Response response = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -54,6 +53,16 @@ public class ClientNetArticles {
             }
         }
         return response.readEntity(responseType);
+    }
+    
+    public Client getClientById(Integer idClient) throws Exception {
+        Response response = webTarget.path(java.text.MessageFormat.format("getClientById/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(Client.class);
     }
     
     public Article getLastArticle() throws Exception {
@@ -132,8 +141,18 @@ public class ClientNetArticles {
         return response.readEntity(Categorie.class);
     }
 
-    public Response createAccount(dal.Client client) throws ClientErrorException, Exception {
+    public Response createAccount(Client client) throws ClientErrorException, Exception {
         Response response = webTarget.path("createAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(client, MediaType.APPLICATION_JSON), Response.class);
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response;
+    }
+    
+    public Response editAccount(Client client) throws ClientErrorException, Exception {
+        Response response = webTarget.path("editAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(client, MediaType.APPLICATION_JSON), Response.class);
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -165,7 +184,4 @@ public class ClientNetArticles {
     public void close() {
         client.close();
     }
-
-    
-
 }

@@ -6,7 +6,6 @@
 package services;
 
 import dal.Achete;
-import dal.Article;
 import dal.Client;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -15,11 +14,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import outils.Utilitaire;
-import session.ArticleFacade;
 import session.ClientFacade;
 
 import dal.Article;
@@ -28,7 +25,6 @@ import dal.Domaine;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import session.AcheteFacade;
 import session.ArticleFacade;
@@ -198,6 +194,23 @@ public class WebserviceResource {
         return response;
     }
     
+    @POST
+    @Path("editAccount")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response editAccount(Client client) throws Exception {
+        Response response = null;
+        try {
+            if (client != null) {
+                clientFacade.editAccount(client);
+                response = Response.status(Response.Status.OK).entity(client).build();
+            }
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
     @GET
     @Path("getClientLastId")
     @Produces(MediaType.APPLICATION_JSON)
@@ -206,6 +219,21 @@ public class WebserviceResource {
         try {
             Client newClient = new Client(clientFacade.getLastId() + 1);
             response = Response.status(Response.Status.OK).entity(newClient).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+    
+    @GET
+    @Path("getClientById/{idClient}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getClientById(@PathParam("idClient") Integer idClient) throws Exception {
+        Response response = null;
+        try {
+            Client client = clientFacade.lireId(idClient);
+            response = Response.status(Response.Status.OK).entity(client).build();
         } catch (Exception ex) {
             JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();

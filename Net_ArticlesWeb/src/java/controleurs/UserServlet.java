@@ -7,7 +7,6 @@ package controleurs;
 
 import dal.Client;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -57,7 +56,7 @@ public class UserServlet extends HttpServlet {
                 vueReponse = connecter(request);
             } else if (demande.equalsIgnoreCase("deconnecter.cpt")) {
                 vueReponse = deconnecter(request);
-            } else if (demande.equalsIgnoreCase("creerCompte.cpt")) {
+            } else if (demande.equalsIgnoreCase("creerCompte.cpt") || demande.equalsIgnoreCase("voirCompte.cpt")) {
                 vueReponse = createAccount(request);
             } else if (demande.equalsIgnoreCase("validerCompte.cpt")) {
                 vueReponse = addCustomer(request);
@@ -149,6 +148,10 @@ public class UserServlet extends HttpServlet {
         try {
             request.setAttribute("listeCategoriesR", categorieF.getCategories());
             request.setAttribute("titre", "Création du compte");
+            Integer idClient = (Integer) request.getSession().getAttribute("clientId");
+            if (idClient != null) {
+                request.setAttribute("clientR", clientF.getClientById(idClient));
+            }            
             return "/client.jsp";
         } catch (Exception e) {
             throw e;
@@ -157,7 +160,13 @@ public class UserServlet extends HttpServlet {
     
     private String addCustomer(HttpServletRequest request) throws Exception{
         try {
-            Client client = clientF.getClientLastId();
+            Integer idClient = (Integer) request.getSession().getAttribute("clientId");
+            Client client = null;
+            if (idClient != null) {
+                client = new Client(idClient);
+            } else {
+                client = clientF.getClientLastId();
+            }
             client.setIdentiteClient(request.getParameter("txtIdentite"));
             System.out.println(request.getParameter("txtAdresse"));
             client.setAdresseClient(request.getParameter("txtAdresse"));
@@ -168,7 +177,12 @@ public class UserServlet extends HttpServlet {
             System.out.println(request.getParameter("cbCategories"));
             client.setCategorie(categorieF.getCategoryById(Integer.parseInt(request.getParameter("cbCategories"))));
             
-            clientF.createAccount(client);
+            if (idClient != null) {
+                clientF.editAccount(client);
+            } else {
+                clientF.createAccount(client);
+            }
+            
             request.setAttribute("articleR", articleF.getLastArticle());
             return "/accueil.jsp";
         } catch (Exception e) {
