@@ -8,7 +8,6 @@ package controleurs;
 import dal.Achete;
 import dal.Article;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -31,12 +30,10 @@ public class CommandeServlet extends HttpServlet {
 
     private String erreur = "";
 
-    @EJB
-    private DomaineFacade domaineFacade;
+    private DomaineFacade domaineFacade = new DomaineFacade();
 
-    @EJB
-    private ArticleFacade articleFacade;
-
+    private ArticleFacade articleFacade = new ArticleFacade();
+    
     private AcheteFacade acheteFacade = new AcheteFacade();
 
     /**

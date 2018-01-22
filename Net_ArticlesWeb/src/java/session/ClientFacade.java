@@ -33,10 +33,26 @@ public class ClientFacade {
         }
     }
     
+    public Client getClientById(Integer idClient) throws Exception {
+        try {
+            return clientNetArticles.getClientById(idClient);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
     public Client getClientLastId() throws Exception {
         try {
             Client client = clientNetArticles.getClientLastId();
             return client;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void editAccount(Client client) throws Exception{
+        try {
+            clientNetArticles.editAccount(client);
         } catch (Exception e) {
             throw e;
         }

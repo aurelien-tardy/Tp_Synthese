@@ -91,4 +91,12 @@ public class ClientFacade {
         }
     }
 
+    public void editAccount(Client client) throws Exception{
+        try {
+            em.merge(client);
+        } catch (Exception e) {
+            throw e;
+        }
     }
+
+}
