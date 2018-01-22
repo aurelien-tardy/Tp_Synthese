@@ -6,6 +6,7 @@
 package session;
 
 import dal.Achete;
+import dal.Article;
 import dal.ClientNetArticles;
 import java.util.List;
 
@@ -14,10 +15,20 @@ import java.util.List;
  * @author Flow
  */
 public class AcheteFacade {
+    
+    ClientNetArticles clientNetArticles = new ClientNetArticles();
+    
     public List<Achete> getListAcheteByIdClient(Integer idClient) throws Exception {
         try {
-            ClientNetArticles clientGestUser = new ClientNetArticles();
-            return clientGestUser.getListAcheteByIdClient(idClient);
+            return clientNetArticles.getListAcheteByIdClient(idClient);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public String validerPanier(Achete achat) throws Exception{
+        try {
+            return clientNetArticles.validerPanier(achat);
         } catch (Exception e) {
             throw e;
         }

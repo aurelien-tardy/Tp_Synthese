@@ -36,9 +36,9 @@ public class CommandeServlet extends HttpServlet {
 
     @EJB
     private ArticleFacade articleFacade;
-    
+
     private AcheteFacade acheteFacade = new AcheteFacade();
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -65,6 +65,8 @@ public class CommandeServlet extends HttpServlet {
                 vueReponse = supprimerPanier(request);
             } else if (demande.equalsIgnoreCase("listeAchats.cde")) {
                 vueReponse = mesArticles(request);
+            } else if (demande.equalsIgnoreCase("validerPanier.cde")) {
+                vueReponse = validerPanier(request);
             }
 
         } catch (Exception e) {
@@ -81,14 +83,14 @@ public class CommandeServlet extends HttpServlet {
             dsp.forward(request, response);
         }
     }
-    
+
     private String getDemande(HttpServletRequest request) {
         String demande = "";
         demande = request.getRequestURI();
         demande = demande.substring(demande.lastIndexOf("/") + 1);
         return demande;
     }
-    
+
     private String ajoutPanier(HttpServletRequest request) throws Exception {
         try {
             HttpSession session = request.getSession();
@@ -126,6 +128,27 @@ public class CommandeServlet extends HttpServlet {
         }
     }
 
+    private String validerPanier(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("panier") != null) {
+            try {
+                Integer idClient = (int) session.getAttribute("clientId");
+                List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
+                for (Article article : panier) {
+                    Achete achat = new Achete(idClient, article.getIdArticle());
+                    acheteFacade.validerPanier(achat);
+                }
+                session.removeAttribute("panier");
+                session.removeAttribute("montantTotalR");    
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+        request.setAttribute("lAchetesR", lAchete);
+        return "/listeAchats.jsp";
+    }
+
     private String supprimerPanier(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
@@ -140,18 +163,26 @@ public class CommandeServlet extends HttpServlet {
             }
         }
 
-        session.setAttribute("panier", panier);
+        if(panier.size() > 0) {
+            session.setAttribute("panier", panier);
+        } else {
+            session.removeAttribute("panier");
+            List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+            request.setAttribute("lAchetesR", lAchete);
+            return "/listeAchats.jsp";
+        }
+        
         session.setAttribute("montantTotalR", montantTotal(panier));
 
         return "/panier.jsp";
     }
-    
+
     private String mesArticles(HttpServletRequest request) throws Exception {
         List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
         request.setAttribute("lAchetesR", lAchete);
         return "/listeAchats.jsp";
     }
-    
+
     private int montantTotal(List<Article> panier) {
         int total = 0;
         for (Article art : panier) {
@@ -160,8 +191,6 @@ public class CommandeServlet extends HttpServlet {
         return total;
     }
 
-    
-    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

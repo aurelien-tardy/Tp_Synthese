@@ -162,6 +162,16 @@ public class ClientNetArticles {
         return response.readEntity(new GenericType<List<Achete>>() {});
     }
 
+    public String validerPanier(Achete achat) throws Exception{
+        Response response = webTarget.path("validerPanier").request(MediaType.APPLICATION_JSON).post(Entity.entity(achat, MediaType.APPLICATION_JSON), Response.class);
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(String.class);
+    }
+    
     public void close() {
         client.close();
     }

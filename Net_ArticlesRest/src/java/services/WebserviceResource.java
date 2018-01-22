@@ -229,4 +229,19 @@ public class WebserviceResource {
         }
         return response;
     }
+    
+    @POST
+    @Path("validerPanier")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response validerPanier(Achete achat) throws Exception {
+        Response response = null;
+        try {
+            String messageValidation = acheteFacade.validerPanier(achat);
+            response = Response.status(Response.Status.OK).entity(messageValidation).build();
+        } catch (Exception e) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
 }
