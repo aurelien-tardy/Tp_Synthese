@@ -6,6 +6,7 @@
 package controleurs;
 
 import dal.Client;
+import dal.Compte;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import outils.Utilitaire;
 import session.ArticleFacade;
 import session.CategorieFacade;
 import session.ClientFacade;
+import session.CompteFacade;
 
 /**
  *
@@ -31,6 +33,8 @@ public class UserServlet extends HttpServlet {
     private final CategorieFacade categorieF = new CategorieFacade();
     
     private final ArticleFacade articleF = new ArticleFacade();
+    
+    private final CompteFacade compteF = new CompteFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -113,7 +117,8 @@ public class UserServlet extends HttpServlet {
             Client client = clientF.lireLogin(login);
             if (client != null) {
                 if (client.getPwdClient().equals(pwd)) {
-                    vueReponse = "/listeAchats.jsp";
+                    request.setAttribute("articleR", articleF.getLastArticle());
+                    vueReponse = "/accueil.jsp";
                     HttpSession session = request.getSession(true);
                     session.setAttribute("clientId", client.getIdClient());
                     request.setAttribute("clientR", client);
@@ -137,7 +142,7 @@ public class UserServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession(true);
             session.setAttribute("clientId", null);
-            vueReponse = "/listeAchats.jsp";
+            vueReponse = "/login.jsp";
             return (vueReponse);
         } catch (Exception e) {
             throw e;
@@ -179,65 +184,24 @@ public class UserServlet extends HttpServlet {
             
             if (idClient != null) {
                 clientF.editAccount(client);
+                compteF.editSolde(client.getCredits(), client.getIdClient());
             } else {
                 clientF.createAccount(client);
+                Compte compte = new Compte(client.getIdClient());
+                compte.setSolde(client.getCredits());
+                compteF.creatéAccount(compte);
+                request.getSession().setAttribute("clientId", client.getIdClient());
             }
             
             request.setAttribute("articleR", articleF.getLastArticle());
             return "/accueil.jsp";
         } catch (Exception e) {
-            throw e;
+            request.setAttribute("listeCategoriesR", categorieF.getCategories());
+            request.setAttribute("titre", "Création du compte");
+            erreurR = e.getMessage();
+            return "/client.jsp";
         }
-    }
-    
-    /*private String enregistrerUtilisateur(HttpServletRequest request) throws Exception {
-               
-        String vueReponse;
-        int id_utilisateur = 0;
-        try { 
-            // Si on est en Modification ou Ajout            
-            if ( !id.equals("")){
-                id_utilisateur = Integer.parseInt(request.getParameter("id"));
-                // Affecter l'Id de l'utilisateur à Modifier
-                user.setIdUtilisateur(id_utilisateur);                
-                titre = "Modifier un profil";
-            }  
-            // Peupler les propriétés de Utilisateur            
-            user.setLogin(request.getParameter("txtLogin"));
-            user.setPwd(request.getParameter("txtPwd"));
-            user.setNom(request.getParameter("txtNom"));
-            user.setPrenom(request.getParameter("txtPrenom"));
-            user.setAdresse(request.getParameter("txtAdresse"));
-            // Instancier l'objet Categorie de la classe Utilisateur
-            user.setCategorie(categorieF.lire(Integer.parseInt(request.getParameter("lstCategories"))));
-            // Il faut conserver les valeurs pour pouvoir
-            // les réafficher en cas d'erreur
-            request.setAttribute("titre",titre);
-            request.setAttribute("userR", user);            
-            // Si on a un id c'est qu'il s'agit d'une modification
-            if (id_utilisateur > 0) {
-                utilisateurF.modifier(user);
-            } else {
-                utilisateurF.ajouter(user);
-            }
-            vueReponse = "/home.jsp";            
-            HttpSession session = request.getSession(true);
-            String userId = session.getAttribute("userId").toString();
-            // Après une modification l'administrateur accède
-            // à la liste des utilisateur alors qu'un utilisateur
-            // lambda retourne à la page home
-            if(userId.equals("1"))
-              vueReponse = "lister.user";               
-            return (vueReponse);
-        } catch (Exception e) {
-            // On reste sur la même page qui est réaffichée
-            request.setAttribute("lstCategoriesR", categorieF.lister());            
-            erreur = Utilitaire.getExceptionCause(e);
-            return "/profil.jsp";
-        }
-    }*/
-    
-    
+    }    
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

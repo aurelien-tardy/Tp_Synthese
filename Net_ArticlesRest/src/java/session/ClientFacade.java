@@ -70,7 +70,7 @@ public class ClientFacade {
     
     public void createAccount(Client client) throws Exception {
         try {
-                em.persist(client);
+            em.persist(client);
         } catch (Exception e) {
             throw e;
         }

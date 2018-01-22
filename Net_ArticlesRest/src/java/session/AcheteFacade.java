@@ -7,6 +7,8 @@ package session;
 
 import dal.Achete;
 import dal.Article;
+import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -40,7 +42,9 @@ public class AcheteFacade {
     public String validerPanier(Achete achat) {
         String message = "";
         try {
-        em.persist(achat);
+            Calendar c = Calendar.getInstance();
+            achat.setDateAchat(new Date(c.getTimeInMillis()));
+            em.persist(achat);
             message = "0Panier validé";
         } catch (Exception e) {
             message = "1Panier non validé";

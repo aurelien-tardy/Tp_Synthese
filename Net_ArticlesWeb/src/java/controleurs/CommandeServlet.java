@@ -7,6 +7,7 @@ package controleurs;
 
 import dal.Achete;
 import dal.Article;
+import dal.Client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
 import session.AcheteFacade;
 import session.ArticleFacade;
+import session.ClientFacade;
+import session.CompteFacade;
 import session.DomaineFacade;
 
 /**
@@ -35,6 +38,10 @@ public class CommandeServlet extends HttpServlet {
     private ArticleFacade articleFacade = new ArticleFacade();
     
     private AcheteFacade acheteFacade = new AcheteFacade();
+    
+    private CompteFacade compteFacade = new CompteFacade();
+    
+    private ClientFacade clientFacade = new ClientFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -89,6 +96,7 @@ public class CommandeServlet extends HttpServlet {
     }
 
     private String ajoutPanier(HttpServletRequest request) throws Exception {
+        String vueReponse;
         try {
             HttpSession session = request.getSession();
             List<Article> panier = null;
@@ -109,17 +117,23 @@ public class CommandeServlet extends HttpServlet {
 
                 if (add) {
                     panier.add(article);
+                    vueReponse = "/panier.jsp";
                 } else {
                     erreur = "L'article est déjà présent dans le panier";
+                    vueReponse = "/listeArticles.jsp";
+                    request.setAttribute("id_domaineR", article.getIdArticle());
+                    request.setAttribute("lArticlesR", articleFacade.getArticlesByField(Integer.toString(article.getIdArticle())));
+                    request.setAttribute("lDomainesR", domaineFacade.getFields());
                 }
             } else {
                 panier.add(article);
+                vueReponse = "/panier.jsp";
             }
 
             session.setAttribute("panier", panier);
             session.setAttribute("montantTotalR", montantTotal(panier));
 
-            return "/panier.jsp";
+            return vueReponse;
         } catch (Exception e) {
             throw e;
         }
@@ -127,23 +141,39 @@ public class CommandeServlet extends HttpServlet {
 
     private String validerPanier(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("panier") != null) {
+        if (session.getAttribute("panier") != null && session.getAttribute("clientId") != null) {
             try {
                 Integer idClient = (int) session.getAttribute("clientId");
                 List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
-                for (Article article : panier) {
+                if ((Integer) session.getAttribute("montantTotalR") <= compteFacade.getSoldeById(idClient)) {
+                    for (Article article : panier) {
                     Achete achat = new Achete(idClient, article.getIdArticle());
                     acheteFacade.validerPanier(achat);
                 }
+                Client client = clientFacade.getClientById(idClient);
+                compteFacade.editSolde(client.getCredits() - (Integer) session.getAttribute("montantTotalR"), idClient);
+                
+                client.setCredits(client.getCredits() - (Integer) session.getAttribute("montantTotalR"));
+                clientFacade.editAccount(client);
                 session.removeAttribute("panier");
-                session.removeAttribute("montantTotalR");    
+                session.removeAttribute("montantTotalR");
+                
+                List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+                request.setAttribute("lAchetesR", lAchete);
+                
+                return "/listeAchats.jsp";
+                } else {
+                    erreur = "Solde insuffisant";
+                    return "/panier.jsp";
+                }
+                  
             } catch (Exception e) {
                 throw e;
             }
+        } else {
+            erreur = "Veuillez vous connecter pour valider votre panier";
+            return "/login.jsp";
         }
-        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
-        request.setAttribute("lAchetesR", lAchete);
-        return "/listeAchats.jsp";
     }
 
     private String supprimerPanier(HttpServletRequest request) throws Exception {
