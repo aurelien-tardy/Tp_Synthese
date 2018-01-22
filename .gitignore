@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-
-BanqueRest/build/
-
-Net_ArticlesRest/build/
-=======
-/BanqueRest/nbproject/private/
-/Net_ArticlesRest/nbproject/private/
-/Net_ArticlesWeb/nbproject/private/
->>>>>>> Stashed changes
+BanqueRest/build/*
+Net_ArticlesRest/build/*
+/BanqueRest/nbproject/private/*
+/Net_ArticlesRest/nbproject/private/*
+/Net_ArticlesWeb/nbproject/private/*
+/Net_ArticlesRest/build/*
+/Net_ArticlesWeb/build/*

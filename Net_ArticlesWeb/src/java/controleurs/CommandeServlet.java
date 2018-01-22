@@ -5,14 +5,12 @@
  */
 package controleurs;
 
+import dal.Achete;
 import dal.Article;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
-import java.io.PrintWriter;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
+import session.AcheteFacade;
 import session.ArticleFacade;
 import session.DomaineFacade;
 
@@ -28,8 +27,8 @@ import session.DomaineFacade;
  *
  * @author Epulapp
  */
-public class NetArticlesServlet extends HttpServlet {
-    
+public class CommandeServlet extends HttpServlet {
+
     private String erreur = "";
 
     @EJB
@@ -37,7 +36,9 @@ public class NetArticlesServlet extends HttpServlet {
 
     @EJB
     private ArticleFacade articleFacade;
-
+    
+    private AcheteFacade acheteFacade = new AcheteFacade();
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -56,16 +57,16 @@ public class NetArticlesServlet extends HttpServlet {
         erreur = "";
         try {
             demande = getDemande(request);
-            if (demande.equalsIgnoreCase("dernierArticle.na") || demande.equalsIgnoreCase("")) {
-                request.setAttribute("articleR", articleFacade.getLastArticle());
-                vueReponse = "/accueil.jsp";
-            } else if (demande.equalsIgnoreCase("rechercher.na")) {
-                vueReponse = rechercherArticles(request);
-            } else if (demande.equalsIgnoreCase("listeArticlesDomaine.na")) {
-                vueReponse = listerArticleDomaine(request);
-            } else if (demande.equalsIgnoreCase("voirArticle.na")) {
-                vueReponse = voirArticle(request);
+            if (demande.equalsIgnoreCase("voirPanier.cde")) {
+                vueReponse = "/panier.jsp";
+            } else if (demande.equalsIgnoreCase("ajoutPanier.cde")) {
+                vueReponse = ajoutPanier(request);
+            } else if (demande.equalsIgnoreCase("supprimerPanier.cde")) {
+                vueReponse = supprimerPanier(request);
+            } else if (demande.equalsIgnoreCase("listeAchats.cde")) {
+                vueReponse = mesArticles(request);
             }
+
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
         } finally {
@@ -79,16 +80,88 @@ public class NetArticlesServlet extends HttpServlet {
             }
             dsp.forward(request, response);
         }
-
     }
-
+    
     private String getDemande(HttpServletRequest request) {
         String demande = "";
         demande = request.getRequestURI();
         demande = demande.substring(demande.lastIndexOf("/") + 1);
         return demande;
     }
+    
+    private String ajoutPanier(HttpServletRequest request) throws Exception {
+        try {
+            HttpSession session = request.getSession();
+            List<Article> panier = null;
+            if (session.getAttribute("panier") == null) {
+                panier = new ArrayList<>();
+            } else {
+                panier = (ArrayList<Article>) session.getAttribute("panier");
+            }
 
+            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+            if (panier.size() > 0) {
+                boolean add = true;
+                for (Article art : panier) {
+                    if (article.equals(art)) {
+                        add = false;
+                    }
+                }
+
+                if (add) {
+                    panier.add(article);
+                } else {
+                    erreur = "L'article est déjà présent dans le panier";
+                }
+            } else {
+                panier.add(article);
+            }
+
+            session.setAttribute("panier", panier);
+            session.setAttribute("montantTotalR", montantTotal(panier));
+
+            return "/panier.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String supprimerPanier(HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
+        Article article = articleFacade.getArticleById(request.getParameter("id_article"));
+        int i = 0;
+        for (Article art : panier) {
+            if (article.equals(art)) {
+                panier.remove(i);
+                break;
+            } else {
+                i++;
+            }
+        }
+
+        session.setAttribute("panier", panier);
+        session.setAttribute("montantTotalR", montantTotal(panier));
+
+        return "/panier.jsp";
+    }
+    
+    private String mesArticles(HttpServletRequest request) throws Exception {
+        List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+        request.setAttribute("lAchetesR", lAchete);
+        return "/listeAchats.jsp";
+    }
+    
+    private int montantTotal(List<Article> panier) {
+        int total = 0;
+        for (Article art : panier) {
+            total += art.getPrix().intValue();
+        }
+        return total;
+    }
+
+    
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -127,48 +200,4 @@ public class NetArticlesServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private String rechercherArticles(HttpServletRequest request) throws Exception {
-        try {
-            request.setAttribute("titre", "Liste des articles d'un domaine");
-            request.setAttribute("lDomainesR", domaineFacade.getFields());
-            return "/rechercher.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    private String listerArticleDomaine(HttpServletRequest request) throws Exception {
-        try {
-            request.setAttribute("titre", "Liste des articles d'un domaine");
-            request.setAttribute("lDomainesR", domaineFacade.getFields());
-            String id = request.getParameter("cbDomaines");
-            if (request.getParameter("id_domaine") != null) {
-                id = request.getParameter("id_domaine");
-            }
-            
-            if (id.equals("0")) {
-                request.setAttribute("id_domaineR", id);
-            } else {
-                request.setAttribute("id_domaineR", id);
-                request.setAttribute("lArticlesR", articleFacade.getArticlesByField(id));
-            }
-            
-            return "/rechercher.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    private String voirArticle(HttpServletRequest request) throws Exception {
-        try {
-            Article article = articleFacade.getArticleById(request.getParameter("id_article"));
-            request.setAttribute("id_domaineR", article.getDomaine().getIdDomaine());
-            request.setAttribute("articleR", article);
-            return "/voirArticle.jsp";
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
 }

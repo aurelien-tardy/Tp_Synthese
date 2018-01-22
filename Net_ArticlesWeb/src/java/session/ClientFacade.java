@@ -6,25 +6,40 @@
 package session;
 
 import dal.Client;
-import dal.ClientGestUser;
+import dal.ClientNetArticles;
+import javax.ws.rs.core.Response;
 
 /**
  *
  * @author Epulapp
  */
 public class ClientFacade {
+
+    ClientNetArticles clientNetArticles = new ClientNetArticles();
     
-    private Client client;
-    
-    
-    
-        public Client lireLogin(String login) throws Exception {
+    public Client lireLogin(String login) throws Exception {
         try {
-            ClientGestUser clientGestUser = new ClientGestUser();
-            return clientGestUser.connecter(Client.class, login);
+            return clientNetArticles.connecter(Client.class, login);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Response createAccount(Client client) throws Exception {
+        try {
+            return clientNetArticles.createAccount(client);
         } catch (Exception e) {
             throw e;
         }
     }
     
+    public Client getClientLastId() throws Exception {
+        try {
+            Client client = clientNetArticles.getClientLastId();
+            return client;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 }
