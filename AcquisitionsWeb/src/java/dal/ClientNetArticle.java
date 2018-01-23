@@ -5,6 +5,7 @@
  */
 package dal;
 
+import java.util.List;
 import javax.json.JsonObject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -19,25 +20,49 @@ import outils.Utilitaire;
  * [webservice]<br>
  * USAGE:
  * <pre>
- *        ClientGestUser client = new ClientGestUser();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        ClientNetArticle client = new ClientNetArticle();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
  * @author Epulapp
  */
-public class ClientGestUser {
+public class ClientNetArticle {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/Net_ArticlesRest/webresources";
+        private static final String BASE_URI = "http://localhost:8080/Net_ArticlesRest/webresources";
 
-    public ClientGestUser() {
+    public ClientNetArticle() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("webservice");
+    }    
+    
+    public List<Redige> getArticlesByAuteurId(String id) throws Exception {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("getArticlesByAuteurId/{0}", new Object[]{id}));
+        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(new GenericType<List<Redige>>(){});
     }
-
+    
+    public List<Achete> getAllAchete() throws Exception {
+        WebTarget resource = webTarget;
+        resource = resource.path("getAllAchete");
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(new GenericType<List<Achete>>() {});
+    }
+    
     public Article getLastArticle() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getLastArticle");
@@ -57,7 +82,7 @@ public class ClientGestUser {
 
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("getConnexion/{0}", new Object[]{login}));
+        resource = resource.path(java.text.MessageFormat.format("getConnexionAuteur/{0}", new Object[]{login}));
         Response response = resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));

@@ -19,7 +19,7 @@ import outils.Utilitaire;
 public class ClientBanque {
     private WebTarget webTarget;
     private javax.ws.rs.client.Client client;
-    private static final String BASE_URI = "http://localhost:8081/BanqueRest/webresources";
+    private static final String BASE_URI = "http://localhost:8080/BanqueRest/webresources";
 
     public ClientBanque() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

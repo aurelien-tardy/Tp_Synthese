@@ -20,16 +20,20 @@ import outils.Utilitaire;
 import session.ClientFacade;
 
 import dal.Article;
+import dal.Auteur;
 import dal.Categorie;
 import dal.Domaine;
+import dal.Redige;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.GenericEntity;
 import session.AcheteFacade;
 import session.ArticleFacade;
+import session.AuteurFacade;
 import session.CategorieFacade;
 import session.DomaineFacade;
+import session.RedigeFacade;
 
 /**
  * REST Web Service
@@ -52,16 +56,22 @@ public class WebserviceResource {
      */
     @EJB
     private ClientFacade clientFacade;
-    
+
+    @EJB
+    private AuteurFacade auteurFacade;
+
     @EJB
     private ArticleFacade articleFacade;
-    
+
     @EJB
     private DomaineFacade domaineFacade;
-    
+
+    @EJB
+    private RedigeFacade redigeFacade;
+
     @EJB
     private CategorieFacade categorieFacade;
-    
+
     @EJB
     private AcheteFacade acheteFacade;
 
@@ -72,7 +82,8 @@ public class WebserviceResource {
         Response response = null;
         try {
             Article article = articleFacade.getLastArticle();
-            GenericEntity<Article> articles = new GenericEntity<Article>(article){};
+            GenericEntity<Article> articles = new GenericEntity<Article>(article) {
+            };
             response = Response.status(Response.Status.OK).entity(articles).build();
         } catch (Exception e) {
             JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(e)).build();
@@ -95,7 +106,56 @@ public class WebserviceResource {
         }
         return response;
     }
+
+    @GET
+    @Path("getConnexionAuteur/{login}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response connecterAuteur(@PathParam("login") String login) throws Exception {
+        Response response = null;
+        try {
+            Auteur auteur = auteurFacade.lireLogin(login);
+            response = Response.status(Response.Status.OK).entity(auteur).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("getArticlesByAuteurId/{Id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getArticlesByAuteurId(@PathParam("Id") String Id) throws Exception {
+        Response response = null;
+        try {
+            List<Redige> lRedige = redigeFacade.getRedigeByIdAuteur(Integer.parseInt(Id));
+            GenericEntity<List<Redige>> lRed = new GenericEntity<List<Redige>>(lRedige) {
+            };
+            response = Response.status(Response.Status.OK).entity(lRed).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }
     
+    @GET
+    @Path("getAllAchete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllAchete() throws Exception {
+        Response response = null;
+        try {
+            List<Achete> lAchete = acheteFacade.getAllAchete();
+            GenericEntity<List<Achete>> lAchats = new GenericEntity<List<Achete>>(lAchete) {
+            };
+            response = Response.status(Response.Status.OK).entity(lAchats).build();
+        } catch (Exception ex) {
+            JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(retour).build();
+        }
+        return response;
+    }    
+
     @GET
     @Path("getFields")
     @Produces(MediaType.APPLICATION_JSON)
@@ -112,8 +172,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
-    
+
     @GET
     @Path("getArticlesByField/{field}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -121,7 +180,8 @@ public class WebserviceResource {
         Response response = null;
         try {
             List<Article> listArticles = articleFacade.getArticlesByField(Integer.parseInt(field));
-            GenericEntity<List<Article>> lArticles = new GenericEntity<List<Article>>(listArticles) {};
+            GenericEntity<List<Article>> lArticles = new GenericEntity<List<Article>>(listArticles) {
+            };
             response = Response.status(Response.Status.OK).entity(lArticles).build();
         } catch (Exception ex) {
             JsonObject retour = Json.createObjectBuilder().add("message", Utilitaire.getExceptionCause(ex)).build();
@@ -129,7 +189,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getArticleById/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -144,7 +204,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getCategories")
     @Produces(MediaType.APPLICATION_JSON)
@@ -161,7 +221,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getCategoryById/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -176,7 +236,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @POST
     @Path("createAccount")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -193,7 +253,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @POST
     @Path("editAccount")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -210,7 +270,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getClientLastId")
     @Produces(MediaType.APPLICATION_JSON)
@@ -225,7 +285,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getClientById/{idClient}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -240,7 +300,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @GET
     @Path("getListAcheteByIdClient/{idClient}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -257,7 +317,7 @@ public class WebserviceResource {
         }
         return response;
     }
-    
+
     @POST
     @Path("validerPanier")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -5,8 +5,9 @@
  */
 package session;
 
-import dal.Auteur;
 import dal.Client;
+import dal.Redige;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,23 +18,20 @@ import javax.persistence.Query;
  * @author Epulapp
  */
 @Stateless
-public class AuteurFacade {
+public class RedigeFacade {
     
-    private Auteur auteur;
-
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;
 
     protected EntityManager getEntityManager() {
         return this.em;
-    }
+    }    
     
-    public Auteur lireLogin(String login) throws Exception {
+    public List<Redige> getRedigeByIdAuteur(Integer idAuteur) throws Exception {
         try {
-            Query requete = em.createNamedQuery("Auteur.findByLoginAuteur");
-            requete.setParameter("loginAuteur", login);
-            Auteur auteur = ((Auteur)requete.getSingleResult());
-            return auteur;
+            Query requete = em.createNamedQuery("Redige.findByIdAuteur");
+            requete.setParameter("idAuteur",idAuteur);
+            return requete.getResultList();            
         } catch (Exception e) {
             throw e;
         }

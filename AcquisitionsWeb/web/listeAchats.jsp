@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<h1 align='center'>Liste de vos achats</h1>
+<h1 align='center'>Liste de mes articles vendus</h1>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>

@@ -9,6 +9,8 @@ import java.util.List;
 import javax.json.JsonObject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -35,14 +37,14 @@ public class ClientNetArticles {
     private static final String BASE_URI = "http://localhost:8080/Net_ArticlesRest/webresources";
 
     public ClientNetArticles() {
-        client = javax.ws.rs.client.ClientBuilder.newClient();
+        client = ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("webservice");
     }
 
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getConnexion/{0}", new Object[]{login}));
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -55,20 +57,20 @@ public class ClientNetArticles {
         return response.readEntity(responseType);
     }
     
-    public Client getClientById(Integer idClient) throws Exception {
+    public dal.Client getClientById(Integer idClient) throws Exception {
         Response response = webTarget.path(java.text.MessageFormat.format("getClientById/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
             throw new Exception(message);
         }
-        return response.readEntity(Client.class);
+        return response.readEntity(dal.Client.class);
     }
     
     public Article getLastArticle() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getLastArticle");
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -84,7 +86,7 @@ public class ClientNetArticles {
     public List<Domaine> getFields() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getFields");
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -96,7 +98,7 @@ public class ClientNetArticles {
     public List<Article> getArticlesByField(String field) throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getArticlesByField/{0}", new Object[]{field}));
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -108,7 +110,7 @@ public class ClientNetArticles {
     public Article getArticleById(String id) throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getArticleById/{0}", new Object[]{id}));
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -120,7 +122,7 @@ public class ClientNetArticles {
     public List<Categorie> getCategories() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getCategories");
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -132,7 +134,7 @@ public class ClientNetArticles {
     public Categorie getCategoryById(Integer id) throws Exception{
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getCategoryById/{0}", new Object[]{id}));
-        Response response = resource.request(MediaType.APPLICATION_JSON).get();
+        Response response = resource.request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");
@@ -141,7 +143,7 @@ public class ClientNetArticles {
         return response.readEntity(Categorie.class);
     }
 
-    public Response createAccount(Client client) throws ClientErrorException, Exception {
+    public Response createAccount(dal.Client client) throws ClientErrorException, Exception {
         Response response = webTarget.path("createAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(client, MediaType.APPLICATION_JSON), Response.class);
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
@@ -151,7 +153,7 @@ public class ClientNetArticles {
         return response;
     }
     
-    public Response editAccount(Client client) throws ClientErrorException, Exception {
+    public Response editAccount(dal.Client client) throws ClientErrorException, Exception {
         Response response = webTarget.path("editAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(client, MediaType.APPLICATION_JSON), Response.class);
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
@@ -172,7 +174,7 @@ public class ClientNetArticles {
     }
     
     public List<Achete> getListAcheteByIdClient(Integer idClient) throws ClientErrorException, Exception {
-        Response response = webTarget.path(java.text.MessageFormat.format("getListAcheteByIdClient/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON).get();
+        Response response = webTarget.path(java.text.MessageFormat.format("getListAcheteByIdClient/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON + "; charset=UTF-8").get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
             String message = jsonObject.getString("message");

@@ -8,13 +8,17 @@
         <servlet-name>NetArticlesServlet</servlet-name>
         <servlet-class>controleurs.NetArticlesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CommandeServlet</servlet-name>
+        <servlet-class>controleurs.CommandeServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>*.cpt</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>NetArticlesServlet</servlet-name>
-        <url-pattern>*.na</url-pattern>
+        <servlet-name>CommandeServlet</servlet-name>
+        <url-pattern>*.cde</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

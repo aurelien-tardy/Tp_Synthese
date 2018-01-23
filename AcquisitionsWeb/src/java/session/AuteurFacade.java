@@ -6,7 +6,7 @@
 package session;
 
 import dal.Auteur;
-import javax.ejb.Stateless;
+import dal.ClientNetArticle;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -21,6 +21,15 @@ public class AuteurFacade {
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;
 
+    public Auteur lireLogin(String login) throws Exception {
+        try {
+            ClientNetArticle clientnetArticle = new ClientNetArticle();
+            return clientnetArticle.connecter(Auteur.class, login);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
     protected EntityManager getEntityManager() {
         return this.em;
     }

@@ -6,7 +6,6 @@
 package session;
 
 import dal.Achete;
-import dal.Article;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -39,6 +38,15 @@ public class AcheteFacade {
         }
     }
 
+    public List<Achete> getAllAchete() throws Exception{
+        try {
+            Query requete = em.createNamedQuery("Achete.findAll");
+            return requete.getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
     public String validerPanier(Achete achat) {
         String message = "";
         try {

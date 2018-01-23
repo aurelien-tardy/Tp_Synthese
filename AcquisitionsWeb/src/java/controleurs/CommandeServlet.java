@@ -5,25 +5,29 @@
  */
 package controleurs;
 
+import dal.Achete;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.ejb.EJB;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import outils.Utilitaire;
-import session.ArticleFacade;
+import session.AcheteFacade;
+import session.RedigeFacade;
 
 /**
  *
  * @author Epulapp
  */
-public class NetArticlesServlet extends HttpServlet {
+public class CommandeServlet extends HttpServlet {
 
     private String erreur = "";
-    ArticleFacade articleFacade = new ArticleFacade();
+
+    private AcheteFacade acheteFacade = new AcheteFacade();
+
+    private RedigeFacade redigeFacade = new RedigeFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,9 +47,10 @@ public class NetArticlesServlet extends HttpServlet {
         erreur = "";
         try {
             demande = getDemande(request);
-            if (demande.equalsIgnoreCase("dernierArticle.na")) {
-                vueReponse = "/login.jsp";
+            if (demande.equalsIgnoreCase("listeAchats.cde")) {
+                vueReponse = mesArticles(request);
             }
+
         } catch (Exception e) {
             erreur = Utilitaire.getExceptionCause(e);
         } finally {
@@ -66,6 +71,17 @@ public class NetArticlesServlet extends HttpServlet {
         demande = request.getRequestURI();
         demande = demande.substring(demande.lastIndexOf("/") + 1);
         return demande;
+    }
+
+    private String mesArticles(HttpServletRequest request) throws Exception {
+        try {
+            List<Achete> lAchats = redigeFacade.getArticlesAcheteByAuteurId(Integer.toString((Integer) request.getSession().getAttribute("userId")));
+            request.setAttribute("lAchetesR", lAchats);
+            return "/listeAchats.jsp";
+        } catch (Exception e) {
+            throw e;
+        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -106,5 +122,4 @@ public class NetArticlesServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

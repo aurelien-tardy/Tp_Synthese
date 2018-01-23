@@ -5,9 +5,12 @@
  */
 package controleurs;
 
+import dal.Achete;
+import dal.Auteur;
 import dal.Client;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import outils.Utilitaire;
-import session.ClientFacade;
+import session.AuteurFacade;
+import session.RedigeFacade;
 
 /**
  *
@@ -24,8 +28,10 @@ import session.ClientFacade;
 public class UserServlet extends HttpServlet {
 
     private String erreur = "";
+
+    private AuteurFacade auteurF = new AuteurFacade();
     
-    private ClientFacade clientF = new ClientFacade();
+    private RedigeFacade redigeF = new RedigeFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,6 +55,8 @@ public class UserServlet extends HttpServlet {
                 vueReponse = login(request);
             } else if (demande.equalsIgnoreCase("connecter.cpt")) {
                 vueReponse = connecter(request);
+            } else if (demande.equalsIgnoreCase("deconnecter.cpt")) {
+                vueReponse = deconnecter(request);
             }
 
         } catch (Exception e) {
@@ -98,14 +106,15 @@ public class UserServlet extends HttpServlet {
         try {
             login = request.getParameter("txtLogin");
             pwd = request.getParameter("txtPwd");
-            Client client = clientF.lireLogin(login);
-            if (client != null) {
-                if (client.getPwdClient().equals(pwd)) {
+            Auteur auteur = auteurF.lireLogin(login);
+            if (auteur != null) {
+                if (auteur.getPwdAuteur().equals(pwd)) {
                     vueReponse = "/accueil.jsp";
                     HttpSession session = request.getSession(true);
-                    session.setAttribute("clientId", client.getIdClient());
-                    request.setAttribute("clientR", client);
-                    request.setAttribute("categorieR", client.getCategorie());
+                    session.setAttribute("userId", auteur.getIdAuteur());
+                    request.setAttribute("clientR", auteur);
+                    List<Achete> lAchats = redigeF.getArticlesAcheteByAuteurId(Integer.toString((Integer) request.getSession().getAttribute("userId")));
+                    request.setAttribute("lAchetesR", lAchats);
                 } else {
                     erreur = "Login ou mot de passe inconnus !";
                 }
@@ -114,6 +123,19 @@ public class UserServlet extends HttpServlet {
             erreur = e.getMessage();
         } finally {
             return (vueReponse);
+        }
+    }
+
+    private String deconnecter(HttpServletRequest request) throws Exception {
+        String vueReponse;
+        erreur = "";
+        try {
+            HttpSession session = request.getSession(true);
+            session.removeAttribute("userId");
+            vueReponse = "/login.jsp";
+            return (vueReponse);
+        } catch (Exception e) {
+            throw e;
         }
     }
 
