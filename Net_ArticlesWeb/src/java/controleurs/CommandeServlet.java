@@ -11,7 +11,8 @@ import dal.Client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +25,7 @@ import session.ArticleFacade;
 import session.ClientFacade;
 import session.CompteFacade;
 import session.DomaineFacade;
+import session.UtilsFacade;
 
 /**
  *
@@ -36,12 +38,14 @@ public class CommandeServlet extends HttpServlet {
     private DomaineFacade domaineFacade = new DomaineFacade();
 
     private ArticleFacade articleFacade = new ArticleFacade();
-    
+
     private AcheteFacade acheteFacade = new AcheteFacade();
-    
+
     private CompteFacade compteFacade = new CompteFacade();
-    
+
     private ClientFacade clientFacade = new ClientFacade();
+
+    private UtilsFacade utilsFacade = new UtilsFacade();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,8 +73,10 @@ public class CommandeServlet extends HttpServlet {
                 vueReponse = supprimerPanier(request);
             } else if (demande.equalsIgnoreCase("listeAchats.cde")) {
                 vueReponse = mesArticles(request);
-            } else if (demande.equalsIgnoreCase("validerPanier.cde")) {
-                vueReponse = validerPanier(request);
+            } else if (demande.equalsIgnoreCase("confirmationPaiement.cde")) {
+                vueReponse = confirmationPaiement(request);
+            } else if (demande.equalsIgnoreCase("keyConfirmation.cde")) {
+                vueReponse = confirmationKey(request);
             }
 
         } catch (Exception e) {
@@ -147,26 +153,26 @@ public class CommandeServlet extends HttpServlet {
                 List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
                 if ((Integer) session.getAttribute("montantTotalR") <= compteFacade.getSoldeById(idClient)) {
                     for (Article article : panier) {
-                    Achete achat = new Achete(idClient, article.getIdArticle());
-                    acheteFacade.validerPanier(achat);
-                }
-                Client client = clientFacade.getClientById(idClient);
-                compteFacade.editSolde(client.getCredits() - (Integer) session.getAttribute("montantTotalR"), idClient);
-                
-                client.setCredits(client.getCredits() - (Integer) session.getAttribute("montantTotalR"));
-                clientFacade.editAccount(client);
-                session.removeAttribute("panier");
-                session.removeAttribute("montantTotalR");
-                
-                List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
-                request.setAttribute("lAchetesR", lAchete);
-                
-                return "/listeAchats.jsp";
+                        Achete achat = new Achete(idClient, article.getIdArticle());
+                        acheteFacade.validerPanier(achat);
+                    }
+                    Client client = clientFacade.getClientById(idClient);
+                    compteFacade.editSolde(client.getCredits() - (Integer) session.getAttribute("montantTotalR"), idClient);
+
+                    client.setCredits(client.getCredits() - (Integer) session.getAttribute("montantTotalR"));
+                    clientFacade.editAccount(client);
+                    session.removeAttribute("panier");
+                    session.removeAttribute("montantTotalR");
+
+                    List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
+                    request.setAttribute("lAchetesR", lAchete);
+
+                    return "/listeAchats.jsp";
                 } else {
                     erreur = "Solde insuffisant";
                     return "/panier.jsp";
                 }
-                  
+
             } catch (Exception e) {
                 throw e;
             }
@@ -190,7 +196,7 @@ public class CommandeServlet extends HttpServlet {
             }
         }
 
-        if(panier.size() > 0) {
+        if (panier.size() > 0) {
             session.setAttribute("panier", panier);
         } else {
             session.removeAttribute("panier");
@@ -198,7 +204,7 @@ public class CommandeServlet extends HttpServlet {
             request.setAttribute("lAchetesR", lAchete);
             return "/listeAchats.jsp";
         }
-        
+
         session.setAttribute("montantTotalR", montantTotal(panier));
 
         return "/panier.jsp";
@@ -216,6 +222,47 @@ public class CommandeServlet extends HttpServlet {
             total += art.getPrix().intValue();
         }
         return total;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    private String confirmationPaiement(HttpServletRequest request) {
+        try {
+            String email = (String) request.getParameter("adresseEmail");
+            String key = utilsFacade.getKey(email);
+            request.getSession().setAttribute("trueKey", key);
+            request.getSession().setAttribute("essai", 3);
+        } catch (Exception ex) {
+            Logger.getLogger(CommandeServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "confirmationKey.jsp";
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    private String confirmationKey(HttpServletRequest request) throws Exception{
+        String key = (String) request.getSession().getAttribute("trueKey");
+        String userKey = (String) request.getParameter("key");
+        if (userKey.equals(key)) {
+            request.getSession().removeAttribute("essai");
+            return validerPanier(request);
+        } else if ((Integer) request.getSession().getAttribute("essai") == 0){
+            erreur = "Trop d'essais invalide !";
+            request.getSession().removeAttribute("essai");
+            return "/panier.jsp";
+        } else {
+            request.getSession().setAttribute("essai", (Integer) request.getSession().getAttribute("essai") - 1);
+            request.setAttribute("trueKey", key);
+            erreur = "Code de confirmation incorrect";
+            return "confirmationKey.jsp";
+        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

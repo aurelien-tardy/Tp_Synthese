@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.commons.mail.*;
 
 /**
  *
@@ -19,12 +20,12 @@ import javax.persistence.Query;
 public class CompteFacade {
 
     @PersistenceContext(unitName = "BanqueRestPU")
-    private EntityManager em;   
+    private EntityManager em;
 
     public EntityManager getEm() {
         return em;
     }
-    
+
     public Compte createAccount(Compte compte) throws Exception {
         try {
             em.persist(compte);

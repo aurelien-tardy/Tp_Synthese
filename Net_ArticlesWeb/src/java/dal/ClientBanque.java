@@ -52,6 +52,16 @@ public class ClientBanque {
         webTarget.path("editSolde").request(MediaType.APPLICATION_JSON).post(Entity.entity(compte, MediaType.APPLICATION_JSON), Compte.class);
     }
     
+    public String confirmPaiement(String email) throws Exception {
+        Response response = webTarget.path(java.text.MessageFormat.format("sendPaiementEmail/{0}", new Object[]{email})).request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = Utilitaire.convertJson(response.readEntity(String.class));
+            String message = jsonObject.getString("message");
+            throw new Exception(message);
+        }
+        return response.readEntity(String.class);
+    }
+    
     public void close() {
         client.close();
     }
