@@ -6,7 +6,6 @@
 package session;
 
 import dal.Auteur;
-import dal.Client;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +17,7 @@ import javax.persistence.Query;
  */
 @Stateless
 public class AuteurFacade {
-    
+
     private Auteur auteur;
 
     @PersistenceContext(unitName = "NetArticlesRestPU")
@@ -27,12 +26,19 @@ public class AuteurFacade {
     protected EntityManager getEntityManager() {
         return this.em;
     }
-    
+
+    /**
+     * Renvoie un Auteur si le login existe
+     *
+     * @param login
+     * @return Auteur
+     * @throws Exception
+     */
     public Auteur lireLogin(String login) throws Exception {
         try {
             Query requete = em.createNamedQuery("Auteur.findByLoginAuteur");
             requete.setParameter("loginAuteur", login);
-            Auteur auteur = ((Auteur)requete.getSingleResult());
+            Auteur auteur = ((Auteur) requete.getSingleResult());
             return auteur;
         } catch (Exception e) {
             throw e;

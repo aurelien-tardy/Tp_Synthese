@@ -75,6 +75,13 @@ public class WebserviceResource {
     @EJB
     private AcheteFacade acheteFacade;
 
+    
+    /**
+     * Appelle le Web Service qui renvoie le dernièr article paru
+     * 
+     * @return Article
+     * @throws Exception 
+     */
     @GET
     @Path("getLastArticle")
     @Produces(MediaType.APPLICATION_JSON)
@@ -92,6 +99,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui identifie si le login utilisateur existe - renvoie un client
+     * 
+     * @param login
+     * @return Client
+     * @throws Exception 
+     */
     @GET
     @Path("getConnexion/{login}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -107,6 +121,14 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     *      
+     * Appelle le Web Service qui identifie si le login auteur existe - renvoie un auteur
+     * 
+     * @param login
+     * @return Auteur
+     * @throws Exception 
+     */
     @GET
     @Path("getConnexionAuteur/{login}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,6 +144,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui récupère la liste des articles de l'auteur
+     * 
+     * @param Id
+     * @return List<Redige>
+     * @throws Exception 
+     */
     @GET
     @Path("getArticlesByAuteurId/{Id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,6 +168,12 @@ public class WebserviceResource {
         return response;
     }
     
+    /**
+     * Appelle le Web Service qui récupère tous les articles achetés
+     * 
+     * @return List<Achete>
+     * @throws Exception 
+     */
     @GET
     @Path("getAllAchete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -156,6 +191,12 @@ public class WebserviceResource {
         return response;
     }    
 
+    /**
+     * Appelle le Web Service qui récupère la liste des domaines des différents articles existants
+     * 
+     * @return List<Domaine>
+     * @throws Exception 
+     */
     @GET
     @Path("getFields")
     @Produces(MediaType.APPLICATION_JSON)
@@ -173,6 +214,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui récupère tous les articles d'un domaine
+     * 
+     * @param field
+     * @return List<Article>
+     * @throws Exception 
+     */
     @GET
     @Path("getArticlesByField/{field}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -190,6 +238,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie l'article demandé s'il existe
+     * 
+     * @param id
+     * @return Article
+     * @throws Exception 
+     */
     @GET
     @Path("getArticleById/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -205,6 +260,12 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie la liste des catégories d'article
+     * 
+     * @return List<Categorie>
+     * @throws Exception 
+     */
     @GET
     @Path("getCategories")
     @Produces(MediaType.APPLICATION_JSON)
@@ -222,6 +283,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie la catégorie demandé si elle existe
+     * 
+     * @param id
+     * @return Categorie
+     * @throws Exception 
+     */
     @GET
     @Path("getCategoryById/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -237,6 +305,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui créer un nouveau client
+     * 
+     * @param client
+     * @return Client
+     * @throws Exception 
+     */
     @POST
     @Path("createAccount")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -254,6 +329,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui modifie le client
+     * 
+     * @param client
+     * @return Client
+     * @throws Exception 
+     */
     @POST
     @Path("editAccount")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -271,6 +353,12 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie l'id du dernier client créé
+     * 
+     * @return Client
+     * @throws Exception 
+     */
     @GET
     @Path("getClientLastId")
     @Produces(MediaType.APPLICATION_JSON)
@@ -286,6 +374,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie le client
+     * 
+     * @param idClient
+     * @return Client
+     * @throws Exception 
+     */
     @GET
     @Path("getClientById/{idClient}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -301,6 +396,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui renvoie la liste des achats d'un client
+     * 
+     * @param idClient
+     * @return List<Achete>
+     * @throws Exception 
+     */
     @GET
     @Path("getListAcheteByIdClient/{idClient}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -318,6 +420,13 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * Appelle le Web Service qui valdie le panier et l'achats de ses articles si possible
+     * 
+     * @param achat
+     * @return String
+     * @throws Exception 
+     */
     @POST
     @Path("validerPanier")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -22,7 +22,8 @@ import session.AuteurFacade;
 import session.RedigeFacade;
 
 /**
- *
+ *Servlet de connexion
+ * 
  * @author Epulapp
  */
 public class UserServlet extends HttpServlet {
@@ -82,6 +83,13 @@ public class UserServlet extends HttpServlet {
         return demande;
     }
 
+    /**
+     * renvoie sur la page de login
+     * 
+     * @param request
+     * @return
+     * @throws Exception 
+     */
     private String login(HttpServletRequest request) throws Exception {
         String vueReponse;
         try {
@@ -113,6 +121,7 @@ public class UserServlet extends HttpServlet {
                     HttpSession session = request.getSession(true);
                     session.setAttribute("userId", auteur.getIdAuteur());
                     request.setAttribute("clientR", auteur);
+                    // permet d'afficher la page des acquisition dès la connexion
                     List<Achete> lAchats = redigeF.getArticlesAcheteByAuteurId(Integer.toString((Integer) request.getSession().getAttribute("userId")));
                     request.setAttribute("lAchetesR", lAchats);
                 } else {
@@ -126,6 +135,13 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Page de déconnexion
+     * 
+     * @param request
+     * @return
+     * @throws Exception 
+     */
     private String deconnecter(HttpServletRequest request) throws Exception {
         String vueReponse;
         erreur = "";

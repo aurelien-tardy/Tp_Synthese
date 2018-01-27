@@ -28,6 +28,13 @@ public class ArticleFacade {
         return em;
     }
     
+    /**
+     * Renvoie les articles possédant ce domaine
+     * 
+     * @param field
+     * @return
+     * @throws Exception 
+     */
     public List<Article> getArticlesByField(int field) throws Exception {
         try {
             Query requeteArticle = em.createNamedQuery("Article.findByDomaine");
@@ -40,6 +47,13 @@ public class ArticleFacade {
         }
     }
     
+    /**
+     * Renvoie l'article
+     * 
+     * @param id
+     * @return
+     * @throws Exception 
+     */
     public Article getArticleById(int id) throws Exception {
         try {
             Query requete = em.createNamedQuery("Article.findByIdArticle");
@@ -50,6 +64,12 @@ public class ArticleFacade {
         }
     }
 
+    /**
+     * Renvoie le dernier article créer
+     * 
+     * @return Article
+     * @throws Exception 
+     */
     public Article getLastArticle() throws Exception {
         try {
             Date date = new Date(0);

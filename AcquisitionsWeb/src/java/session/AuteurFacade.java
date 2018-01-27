@@ -21,6 +21,13 @@ public class AuteurFacade {
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;
 
+    /**
+     * retour l'auteur affilié au login donné s'il existe
+     * 
+     * @param login
+     * @return
+     * @throws Exception 
+     */
     public Auteur lireLogin(String login) throws Exception {
         try {
             ClientNetArticle clientnetArticle = new ClientNetArticle();

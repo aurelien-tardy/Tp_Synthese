@@ -28,6 +28,13 @@ public class AcheteFacade {
         return em;
     }
 
+    /**
+     * Renvoie la liste des achats d'un client
+     * 
+     * @param idClient
+     * @return
+     * @throws Exception 
+     */
     public List<Achete> getListAcheteByIdClient(Integer idClient) throws Exception {
         try {
             Query requete = em.createNamedQuery("Achete.findByIdClient");
@@ -38,6 +45,12 @@ public class AcheteFacade {
         }
     }
 
+    /**
+     * Renvoie la list de tous les achats
+     * 
+     * @return
+     * @throws Exception 
+     */
     public List<Achete> getAllAchete() throws Exception{
         try {
             Query requete = em.createNamedQuery("Achete.findAll");
@@ -47,6 +60,12 @@ public class AcheteFacade {
         }
     }
     
+    /**
+     * Valide le panier si c'est possible
+     * 
+     * @param achat
+     * @return String
+     */
     public String validerPanier(Achete achat) {
         String message = "";
         try {

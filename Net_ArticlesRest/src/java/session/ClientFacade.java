@@ -5,11 +5,8 @@
  */
 package session;
 
-import dal.Article;
-import dal.Categorie;
 import dal.Client;
 import java.util.List;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,6 +54,13 @@ public class ClientFacade {
         }
     }
     
+    /**
+     * Renvoie le client si le login existe
+     * 
+     * @param id
+     * @return Client
+     * @throws Exception 
+     */
     public Client lireId(Integer id) throws Exception {
         try {
             Query requete = em.createNamedQuery("Client.findByIdClient");
@@ -68,6 +72,12 @@ public class ClientFacade {
         }
     }
     
+    /**
+     * Créer un compte client
+     * 
+     * @param client
+     * @throws Exception 
+     */
     public void createAccount(Client client) throws Exception {
         try {
             em.persist(client);
@@ -76,6 +86,12 @@ public class ClientFacade {
         }
     }
     
+    /**
+     * Renvoie le dernier id client
+     * 
+     * @return Integer
+     * @throws Exception 
+     */
     public Integer getLastId() throws Exception {
         try {
             Integer lastId = 0;
@@ -91,6 +107,12 @@ public class ClientFacade {
         }
     }
 
+    /**
+     * Modifie un compte client avec le nouveau client passé en paramètre
+     * 
+     * @param client
+     * @throws Exception 
+     */
     public void editAccount(Client client) throws Exception{
         try {
             em.merge(client);

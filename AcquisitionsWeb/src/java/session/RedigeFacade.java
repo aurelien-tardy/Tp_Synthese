@@ -17,6 +17,13 @@ import java.util.List;
  */
 public class RedigeFacade {
 
+    /**
+     * Renvoie la liste des articles de l'auteur qui ont été acquis
+     * 
+     * @param auteurId
+     * @return
+     * @throws Exception 
+     */
     public List<Achete> getArticlesAcheteByAuteurId(String auteurId) throws Exception {
         try {
             List<Achete> lAchats = new ArrayList<Achete>();

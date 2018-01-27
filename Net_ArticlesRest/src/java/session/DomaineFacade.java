@@ -26,6 +26,12 @@ public class DomaineFacade {
         return em;
     }
     
+    /**
+     * Renvoie le domaine
+     * 
+     * @param id
+     * @return Domaine
+     */
     public Domaine getFieldById(int id) {
         Query requete = em.createNamedQuery("Domaine.findByIdDomaine");
         requete.setParameter("idDomaine", id);

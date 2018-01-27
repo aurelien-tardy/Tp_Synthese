@@ -17,6 +17,12 @@ import javax.ejb.Stateless;
 @Stateless
 public class AcheteFacade {
 
+    /**
+     * Recupère tous les articels achetés
+     * 
+     * @return
+     * @throws Exception 
+     */
     public List<Achete> getAllAchete() throws Exception {
         try {
             ClientNetArticle clientNetArticle = new ClientNetArticle();

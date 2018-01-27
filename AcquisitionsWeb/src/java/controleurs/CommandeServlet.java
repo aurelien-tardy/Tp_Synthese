@@ -18,7 +18,7 @@ import session.AcheteFacade;
 import session.RedigeFacade;
 
 /**
- *
+ * Servelet gértant les page .cde
  * @author Epulapp
  */
 public class CommandeServlet extends HttpServlet {
@@ -73,6 +73,13 @@ public class CommandeServlet extends HttpServlet {
         return demande;
     }
 
+    /**
+     * Renvoie sur la page des acquisitions
+     * 
+     * @param request
+     * @return
+     * @throws Exception 
+     */
     private String mesArticles(HttpServletRequest request) throws Exception {
         try {
             List<Achete> lAchats = redigeFacade.getArticlesAcheteByAuteurId(Integer.toString((Integer) request.getSession().getAttribute("userId")));

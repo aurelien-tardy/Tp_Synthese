@@ -5,7 +5,6 @@
  */
 package session;
 
-import dal.Client;
 import dal.Redige;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -27,6 +26,13 @@ public class RedigeFacade {
         return this.em;
     }    
     
+    /**
+     * Renvoie la liste des liens article/auteur de l'auteur
+     * 
+     * @param idAuteur
+     * @return List<Redige>
+     * @throws Exception 
+     */
     public List<Redige> getRedigeByIdAuteur(Integer idAuteur) throws Exception {
         try {
             Query requete = em.createNamedQuery("Redige.findByIdAuteur");
