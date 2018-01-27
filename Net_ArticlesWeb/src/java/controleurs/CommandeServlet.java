@@ -9,6 +9,8 @@ import dal.Achete;
 import dal.Article;
 import dal.Client;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -227,16 +229,23 @@ public class CommandeServlet extends HttpServlet {
     /**
      *
      * @param request
-     * @return
+     * @return String
      */
     private String confirmationPaiement(HttpServletRequest request) {
         try {
             String email = (String) request.getParameter("adresseEmail");
             String key = utilsFacade.getKey(email);
+            if (key == null) {
+                throw new Exception("Erreur lors de la génération de la clé");
+            }
             request.getSession().setAttribute("trueKey", key);
             request.getSession().setAttribute("essai", 3);
         } catch (Exception ex) {
             Logger.getLogger(CommandeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex.getMessage().contains("Erreur lors de la génération de la clé")) {
+                erreur = ex.getMessage();
+            }
+            return "/panier.jsp";
         }
         return "confirmationKey.jsp";
     }
@@ -244,15 +253,15 @@ public class CommandeServlet extends HttpServlet {
     /**
      *
      * @param request
-     * @return
+     * @return String
      */
-    private String confirmationKey(HttpServletRequest request) throws Exception{
+    private String confirmationKey(HttpServletRequest request) throws Exception {
         String key = (String) request.getSession().getAttribute("trueKey");
         String userKey = (String) request.getParameter("key");
-        if (userKey.equals(key)) {
+        if (getEncryptedKey(userKey).equals(key)) {
             request.getSession().removeAttribute("essai");
             return validerPanier(request);
-        } else if ((Integer) request.getSession().getAttribute("essai") == 0){
+        } else if ((Integer) request.getSession().getAttribute("essai") == 0) {
             erreur = "Trop d'essais invalide !";
             request.getSession().removeAttribute("essai");
             return "/panier.jsp";
@@ -262,7 +271,27 @@ public class CommandeServlet extends HttpServlet {
             erreur = "Code de confirmation incorrect";
             return "confirmationKey.jsp";
         }
-        
+
+    }
+
+    /**
+     * Renvoie un hash de la chaine en MD5
+     *
+     * @param key
+     * @return String
+     */
+    private String getEncryptedKey(String key) {
+        String encryptedKey = null;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(key.getBytes());
+            String encryptedString = new String(messageDigest.digest());
+            encryptedKey = encryptedString;
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ex.getStackTrace().toString());
+        } finally {
+            return encryptedKey;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

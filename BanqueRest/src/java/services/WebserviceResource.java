@@ -6,10 +6,11 @@
 package services;
 
 import dal.Compte;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.KeyGenerator;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -103,15 +104,35 @@ public class WebserviceResource {
             email.setMsg("Voici votre code de confirmation de paiement sur le site Net Article: " + generatedKey);
             email.addTo(mail);
             email.send();
-            return generatedKey;
+            return getEncryptedKey(generatedKey);
         } catch (EmailException ex) {
             Logger.getLogger(WebserviceResource.class.getName()).log(Level.SEVERE, null, ex);
             return ex.getMessage();
         }
     }
 
-    public String generateKey() {
+    private String generateKey() {
         String key = Functions.substring(UUID.randomUUID().toString().replace("-", ""), 0, 8);
         return key;
+    }
+    
+    /**
+     * Renvoie un hash de la chaine en MD5
+     *
+     * @param key
+     * @return String
+     */
+    private String getEncryptedKey(String key) {
+        String encryptedKey = null;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(key.getBytes());
+            String encryptedString = new String(messageDigest.digest());
+            encryptedKey = encryptedString;
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(WebserviceResource.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return encryptedKey;
+        }
     }
 }
