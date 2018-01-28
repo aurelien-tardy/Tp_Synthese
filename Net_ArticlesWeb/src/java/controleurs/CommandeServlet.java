@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,17 +38,23 @@ public class CommandeServlet extends HttpServlet {
 
     private String erreur = "";
 
-    private DomaineFacade domaineFacade = new DomaineFacade();
+    @EJB
+    private DomaineFacade domaineFacade;
 
-    private ArticleFacade articleFacade = new ArticleFacade();
+    @EJB
+    private ArticleFacade articleFacade;
 
-    private AcheteFacade acheteFacade = new AcheteFacade();
+    @EJB
+    private AcheteFacade acheteFacade;
 
-    private CompteFacade compteFacade = new CompteFacade();
+    @EJB
+    private CompteFacade compteFacade;
 
-    private ClientFacade clientFacade = new ClientFacade();
+    @EJB
+    private ClientFacade clientFacade;
 
-    private UtilsFacade utilsFacade = new UtilsFacade();
+    @EJB
+    private UtilsFacade utilsFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -103,6 +110,13 @@ public class CommandeServlet extends HttpServlet {
         return demande;
     }
 
+    /**
+     * Ajoute un article au panier
+     * Vérifie si l'article n'est pas déjà présent dans le panier
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String ajoutPanier(HttpServletRequest request) throws Exception {
         String vueReponse;
         try {
@@ -147,6 +161,14 @@ public class CommandeServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Valide la panier
+     * Vérifie si le client à assez sur son compte pour acheter les articles
+     * Vérifie aussi si le client à déjà acheté des articles de son panier précedement
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String validerPanier(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         if (session.getAttribute("panier") != null && session.getAttribute("clientId") != null) {
@@ -184,6 +206,12 @@ public class CommandeServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Supprime un article du panier
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String supprimerPanier(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         List<Article> panier = (ArrayList<Article>) session.getAttribute("panier");
@@ -212,12 +240,23 @@ public class CommandeServlet extends HttpServlet {
         return "/panier.jsp";
     }
 
+    /**
+     * Permet d'afficher la liste des articles acquis par le client
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String mesArticles(HttpServletRequest request) throws Exception {
         List<Achete> lAchete = acheteFacade.getListAcheteByIdClient((Integer) request.getSession().getAttribute("clientId"));
         request.setAttribute("lAchetesR", lAchete);
         return "/listeAchats.jsp";
     }
 
+    /**
+     * Calcul le montant total des articles du panier
+     * @param panier
+     * @return int
+     */
     private int montantTotal(List<Article> panier) {
         int total = 0;
         for (Article art : panier) {
@@ -227,7 +266,7 @@ public class CommandeServlet extends HttpServlet {
     }
 
     /**
-     *
+     * Créer la code de confirmation d'achat et envoie le mail au client
      * @param request
      * @return String
      */
@@ -251,7 +290,9 @@ public class CommandeServlet extends HttpServlet {
     }
 
     /**
-     *
+     * Confirmation du code de vérification d'achat
+     * Vérifie si le code entré est le bon
+     * Au bout de 3 essais raté, l'achat est annulé
      * @param request
      * @return String
      */

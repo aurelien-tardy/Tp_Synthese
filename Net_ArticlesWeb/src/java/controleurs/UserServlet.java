@@ -8,6 +8,7 @@ package controleurs;
 import dal.Client;
 import dal.Compte;
 import java.io.IOException;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,13 +29,17 @@ public class UserServlet extends HttpServlet {
 
     private String erreurR = "";
 
-    private final ClientFacade clientF = new ClientFacade();
+    @EJB
+    private ClientFacade clientF;
     
-    private final CategorieFacade categorieF = new CategorieFacade();
+    @EJB
+    private CategorieFacade categorieF;
     
-    private final ArticleFacade articleF = new ArticleFacade();
+    @EJB
+    private ArticleFacade articleF;
     
-    private final CompteFacade compteF = new CompteFacade();
+    @EJB
+    private CompteFacade compteF;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -90,6 +95,12 @@ public class UserServlet extends HttpServlet {
         return demande;
     }
 
+    /**
+     * Redirige l'utilisateur sur la page de login
+     * @param request
+     * @return
+     * @throws Exception 
+     */
     private String login(HttpServletRequest request) throws Exception {
         String vueReponse;
         try {
@@ -101,8 +112,7 @@ public class UserServlet extends HttpServlet {
     }
 
     /**
-     * Vérifie que l'utilisateur a saisi le bon login et mot de passe
-     *
+     * Vérifie que l'utilisateur a saisi le bon login et mot de passe et le connecte si c'est la cas
      * @param request
      * @return String page de redirection
      * @throws Exception
@@ -114,7 +124,10 @@ public class UserServlet extends HttpServlet {
         try {
             login = request.getParameter("txtLogin");
             pwd = request.getParameter("txtPwd");
+            // Récupération du client
             Client client = clientF.lireLogin(login);
+            // Si aucun client n'a été trouvé on écrit une erreur et on redirige vers la page de login
+            // Sinon on connecte l'utilisateur et on le redirige vers la page d'accueil
             if (client != null) {
                 if (client.getPwdClient().equals(pwd)) {
                     request.setAttribute("articleR", articleF.getLastArticle());
@@ -135,7 +148,13 @@ public class UserServlet extends HttpServlet {
             return (vueReponse);
         }
     }
-
+    
+    /**
+     * Déconnecte l'utilisateur
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String deconnecter(HttpServletRequest request) throws Exception {
         String vueReponse;
         erreurR = "";
@@ -149,6 +168,12 @@ public class UserServlet extends HttpServlet {
         }
     }
     
+    /**
+     * Formattage de la page de création de l'utilisateur
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String createAccount(HttpServletRequest request) throws Exception{
         try {
             request.setAttribute("listeCategoriesR", categorieF.getCategories());
@@ -163,6 +188,13 @@ public class UserServlet extends HttpServlet {
         }
     }
     
+    /**
+     * Fonction ajoutant ou modifiant un utilisateur dans la table net_articles.client
+     * Si c'est un ajout, créer aussi son compte dans la table banque.compte
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String addCustomer(HttpServletRequest request) throws Exception{
         try {
             Integer idClient = (Integer) request.getSession().getAttribute("clientId");

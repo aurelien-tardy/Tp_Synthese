@@ -18,8 +18,6 @@ import javax.persistence.Query;
 @Stateless
 public class AuteurFacade {
 
-    private Auteur auteur;
-
     @PersistenceContext(unitName = "NetArticlesRestPU")
     private EntityManager em;
 

@@ -121,6 +121,12 @@ public class NetArticlesServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    /**
+     * Récupère la liste des domaines et le affiche dans la liste déroulante
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String rechercherArticles(HttpServletRequest request) throws Exception {
         try {
             request.setAttribute("titre", "Liste des articles d'un domaine");
@@ -131,6 +137,12 @@ public class NetArticlesServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Récupère toutes les oeuvres d'un domaine et les affiche dans un tableau
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String listerArticleDomaine(HttpServletRequest request) throws Exception {
         try {
             request.setAttribute("titre", "Liste des articles d'un domaine");
@@ -153,6 +165,12 @@ public class NetArticlesServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Récupère les détails d'un article et les affiche sur la page de résumé d'article
+     * @param request
+     * @return String
+     * @throws Exception 
+     */
     private String voirArticle(HttpServletRequest request) throws Exception {
         try {
             Article article = articleFacade.getArticleById(request.getParameter("id_article"));

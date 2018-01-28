@@ -25,6 +25,12 @@ public class CompteFacade {
         return em;
     }
 
+    /**
+     * Fonction permettant de créer un nouveau compte dans la table Banque.compte
+     * @param compte
+     * @return le compte créer
+     * @throws Exception 
+     */
     public Compte createAccount(Compte compte) throws Exception {
         try {
             em.persist(compte);
@@ -34,8 +40,15 @@ public class CompteFacade {
         }
     }
     
+    /**
+     * Récupération du compte afin de récupérer l'attribut solde
+     * @param id
+     * @return 
+     * @throws Exception 
+     */
     public Compte getSoldeById(Integer id) throws Exception {
         try {
+            // Création d'une query permettant de récupérer un compte avec un idCompte comme paramètre
             Query requete = em.createNamedQuery("Compte.findByIdCompte");
             requete.setParameter("idCompte", id);
             return (Compte) requete.getSingleResult();
@@ -44,8 +57,14 @@ public class CompteFacade {
         }
     }
 
+    /**
+     * Permet d'éditer le solde d'un compte après l'achat d'un ou plusieurs articles
+     * @param compte
+     * @throws Exception 
+     */
     public void editSolde(Compte compte) throws Exception {
         try {
+            // Edit 
             em.merge(compte);
         } catch (Exception e) {
             throw e;

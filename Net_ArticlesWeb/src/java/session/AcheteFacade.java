@@ -6,18 +6,25 @@
 package session;
 
 import dal.Achete;
-import dal.Article;
 import dal.ClientNetArticles;
 import java.util.List;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author Flow
  */
+@Stateless
 public class AcheteFacade {
     
     ClientNetArticles clientNetArticles = new ClientNetArticles();
     
+    /**
+     * Récupère la liste des produits acheté par un client grâce à l'idClient
+     * @param idClient
+     * @return List<Achete>
+     * @throws Exception 
+     */
     public List<Achete> getListAcheteByIdClient(Integer idClient) throws Exception {
         try {
             return clientNetArticles.getListAcheteByIdClient(idClient);
@@ -26,6 +33,12 @@ public class AcheteFacade {
         }
     }
     
+    /**
+     * Valide le panier d'un client
+     * @param achat
+     * @return String
+     * @throws Exception 
+     */
     public String validerPanier(Achete achat) throws Exception{
         try {
             return clientNetArticles.validerPanier(achat);

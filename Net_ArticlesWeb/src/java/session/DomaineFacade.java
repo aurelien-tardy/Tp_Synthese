@@ -18,10 +18,16 @@ import javax.ejb.Stateless;
 @Stateless
 public class DomaineFacade {
 
+    ClientNetArticles clientNetArticles = new ClientNetArticles();
+    
+    /**
+     * Récupère la liste des domaines
+     * @return List<Domaine>
+     * @throws Exception 
+     */
     public List<Domaine> getFields() throws Exception {
         List<Domaine> listFields = new ArrayList<>();
         try {
-            ClientNetArticles clientNetArticles = new ClientNetArticles();
             listFields = clientNetArticles.getFields();
         } catch (Exception e) {
             throw e;

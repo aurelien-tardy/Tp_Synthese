@@ -7,19 +7,15 @@ package session;
 
 import dal.Auteur;
 import dal.ClientNetArticle;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author Epulapp
  */
 public class AuteurFacade {
-    
-    private Auteur auteur;
 
-    @PersistenceContext(unitName = "NetArticlesRestPU")
-    private EntityManager em;
+    ClientNetArticle clientnetArticle = new ClientNetArticle();
+    
 
     /**
      * retour l'auteur affilié au login donné s'il existe
@@ -30,14 +26,9 @@ public class AuteurFacade {
      */
     public Auteur lireLogin(String login) throws Exception {
         try {
-            ClientNetArticle clientnetArticle = new ClientNetArticle();
             return clientnetArticle.connecter(Auteur.class, login);
         } catch (Exception e) {
             throw e;
         }
-    }
-    
-    protected EntityManager getEntityManager() {
-        return this.em;
     }
 }

@@ -18,10 +18,17 @@ import javax.ejb.Stateless;
 @Stateless
 public class ArticleFacade {
 
+    ClientNetArticles clientNetArticles = new ClientNetArticles();
+    
+    /**
+     * Récupère tous les articles d'un domaine
+     * @param field
+     * @return List<Article>
+     * @throws Exception 
+     */
     public List<Article> getArticlesByField(String field) throws Exception {
         List<Article> listFields = new ArrayList<>();
         try {
-            ClientNetArticles clientNetArticles = new ClientNetArticles();
             listFields = clientNetArticles.getArticlesByField(field);
         } catch (Exception e) {
             throw e;
@@ -29,20 +36,30 @@ public class ArticleFacade {
         return listFields;
     }
     
+    /**
+     * Récupère un article à l'aide de son id
+     * @param id
+     * @return Article
+     * @throws Exception 
+     */
     public Article getArticleById(String id) throws Exception {
         Article article = new Article();
         try {
-            ClientNetArticles clientNetArticles = new ClientNetArticles();
             article = clientNetArticles.getArticleById(id);
         } catch (Exception e) {
             throw e;
         }
         return article;
     }
+    
+    /**
+     * Récupère le dernier article mis en vente
+     * @return
+     * @throws Exception 
+     */
     public Article getLastArticle() throws Exception {
         try {
-            ClientNetArticles clientGestUser = new ClientNetArticles();
-            return clientGestUser.getLastArticle();
+            return clientNetArticles.getLastArticle();
         } catch (Exception e) {
             throw e;
         }

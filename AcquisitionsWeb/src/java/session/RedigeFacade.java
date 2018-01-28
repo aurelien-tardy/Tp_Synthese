@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class RedigeFacade {
 
+    ClientNetArticle clientNetArticle = new ClientNetArticle();
+    
     /**
      * Renvoie la liste des articles de l'auteur qui ont été acquis
      * 
@@ -27,7 +29,6 @@ public class RedigeFacade {
     public List<Achete> getArticlesAcheteByAuteurId(String auteurId) throws Exception {
         try {
             List<Achete> lAchats = new ArrayList<Achete>();
-            ClientNetArticle clientNetArticle = new ClientNetArticle();
             List<Redige> lRedige = clientNetArticle.getArticlesByAuteurId(auteurId);
             List<Achete> lAchete = clientNetArticle.getAllAchete();
             for (Redige redige : lRedige) {

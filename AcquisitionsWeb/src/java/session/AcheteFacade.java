@@ -17,6 +17,8 @@ import javax.ejb.Stateless;
 @Stateless
 public class AcheteFacade {
 
+    ClientNetArticle clientNetArticle = new ClientNetArticle();
+    
     /**
      * Recupère tous les articels achetés
      * 
@@ -25,7 +27,6 @@ public class AcheteFacade {
      */
     public List<Achete> getAllAchete() throws Exception {
         try {
-            ClientNetArticle clientNetArticle = new ClientNetArticle();
             return clientNetArticle.getAllAchete();
         } catch (Exception e) {
             throw e;

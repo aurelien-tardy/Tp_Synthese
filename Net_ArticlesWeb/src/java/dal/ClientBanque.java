@@ -26,6 +26,12 @@ public class ClientBanque {
         webTarget = client.target(BASE_URI).path("webservice");
     }
     
+    /**
+     * Appelle le web service de BanqueRest pour créer un compte bancaire au client qui vient de se créer un compte dans l'application
+     * @param compte
+     * @return Compte
+     * @throws Exception 
+     */
     public Compte createAccount(Compte compte) throws Exception {
         Response response = webTarget.path("createAccount").request(MediaType.APPLICATION_JSON).post(Entity.entity(compte, MediaType.APPLICATION_JSON), Response.class);
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
@@ -36,6 +42,12 @@ public class ClientBanque {
         return response.readEntity(Compte.class);
     }
     
+    /**
+     * Appelle le web service de BanqueRest pour récupérer un compte grâce à l'id du compte
+     * @param id
+     * @return Compte
+     * @throws Exception 
+     */
     public Compte getSoldeById(Integer id) throws Exception {
         Response response = webTarget.path(java.text.MessageFormat.format("getSoldeById/{0}", new Object[]{id})).request(MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
@@ -46,12 +58,25 @@ public class ClientBanque {
         return response.readEntity(Compte.class);
     }
 
+    /**
+     * Appelle le web service de BanqueRest pour éditer le solde d'un compte
+     * Il récupère d'abord le compte à modifier avec l'idClient avant d'effectuer la modification
+     * @param montant
+     * @param idClient
+     * @throws Exception 
+     */
     public void editSolde(Integer montant, Integer idClient) throws Exception{
         Compte compte = webTarget.path(java.text.MessageFormat.format("getSoldeById/{0}", new Object[]{idClient})).request(MediaType.APPLICATION_JSON).get().readEntity(Compte.class);
         compte.setSolde(montant);
         webTarget.path("editSolde").request(MediaType.APPLICATION_JSON).post(Entity.entity(compte, MediaType.APPLICATION_JSON), Compte.class);
     }
     
+    /**
+     * Appelle le web service de BanqueRest permettant d'nevoyer un email contenant le code de confirmation d'achat au client
+     * @param email
+     * @return String
+     * @throws Exception 
+     */
     public String confirmPaiement(String email) throws Exception {
         Response response = webTarget.path(java.text.MessageFormat.format("sendPaiementEmail/{0}", new Object[]{email})).request(MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {

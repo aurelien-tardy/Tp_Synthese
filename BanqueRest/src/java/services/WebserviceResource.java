@@ -47,6 +47,12 @@ public class WebserviceResource {
     public WebserviceResource() {
     }
 
+    /**
+     * WebService permettant de créer un compte
+     * @param compte
+     * @return Response
+     * @throws Exception 
+     */
     @POST
     @Path("createAccount")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,6 +68,12 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * WebService permettant de récupérer un compte avec l'id du compte
+     * @param id
+     * @return
+     * @throws Exception 
+     */
     @GET
     @Path("getSoldeById/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +89,11 @@ public class WebserviceResource {
         return response;
     }
 
+    /**
+     * WebService permettant d'éditer le solde d'un compte
+     * @param compte
+     * @throws Exception 
+     */
     @POST
     @Path("editSolde")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -88,6 +105,11 @@ public class WebserviceResource {
         }
     }
 
+    /**
+     * WebService permettant d'envoyer un email de confirmation d'achat
+     * @param mail
+     * @return Response
+     */
     @GET
     @Path("sendPaiementEmail/{mail}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -111,7 +133,11 @@ public class WebserviceResource {
         }
     }
 
-    private String generateKey() {
+    /**
+     * Génération de la clé de confirmation qui sera présente dans le mail
+     * @return String
+     */
+    public String generateKey() {
         String key = Functions.substring(UUID.randomUUID().toString().replace("-", ""), 0, 8);
         return key;
     }
