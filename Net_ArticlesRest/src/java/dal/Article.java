@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Article.findByResume", query = "SELECT a FROM Article a WHERE a.resume = :resume")
     , @NamedQuery(name = "Article.findByPrix", query = "SELECT a FROM Article a WHERE a.prix = :prix")
     , @NamedQuery(name = "Article.findByDateArticle", query = "SELECT a FROM Article a WHERE a.dateArticle = :dateArticle")
-    , @NamedQuery(name = "Article.findByFichier", query = "SELECT a FROM Article a WHERE a.fichier = :fichier")})
+    , @NamedQuery(name = "Article.findByFichier", query = "SELECT a FROM Article a WHERE a.fichier = :fichier")
+    , @NamedQuery(name = "Article.findByDomaine", query = "SELECT a FROM Article a WHERE a.domaine = :domaine")})
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -185,5 +186,5 @@ public class Article implements Serializable {
     public String toString() {
         return "dal.Article[ idArticle=" + idArticle + " ]";
     }
-    
+
 }
