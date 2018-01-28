@@ -13,7 +13,7 @@
 - Un mail de confirmation est envoyé sur l'adresse mail spécifiée lors de la validation du panier.
 - Le client récupère le code de confirmation qui lui à été envoyé et l'insert dans le champ prévu à cet effet.
 - Si le code est correcte le panier est validé sinon il a 3 essai avant d'annulé la validation du panier.
-
+<br>
 <b>Remarques:</b>
 - Nous aurions voulu ajouter un champ en base de données pour y insérer l'email du client pour rendre le système sécruisé. (nous avons évité pour les besoins du TP).
 - La génération du code de confirmation (coté serveur rest) est hashé (en MD5) pour plus de sécurité. Ainsi un "user-in-the-middle" ne pourrait pas utiliser le code car il est hashé. Pour comparer la clé entrée par l'utilisateur et la clé générée on compare le hash (MD5) de la clé entrée et celui de la clé générée.
