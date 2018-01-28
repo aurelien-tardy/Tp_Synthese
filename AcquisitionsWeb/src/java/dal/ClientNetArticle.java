@@ -39,6 +39,13 @@ public class ClientNetArticle {
         webTarget = client.target(BASE_URI).path("webservice");
     }    
     
+    /**
+     * Appelle le Web Service et renvoie la liste des lien article/auteur de l'auteur
+     * 
+     * @param id
+     * @return List<Redige>
+     * @throws Exception 
+     */
     public List<Redige> getArticlesByAuteurId(String id) throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getArticlesByAuteurId/{0}", new Object[]{id}));
@@ -51,6 +58,12 @@ public class ClientNetArticle {
         return response.readEntity(new GenericType<List<Redige>>(){});
     }
     
+    /**
+     * Appelle le Web Service et renvoie tous les achats
+     * 
+     * @return List<Achete>
+     * @throws Exception 
+     */
     public List<Achete> getAllAchete() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getAllAchete");
@@ -63,6 +76,13 @@ public class ClientNetArticle {
         return response.readEntity(new GenericType<List<Achete>>() {});
     }
     
+    
+    /**
+     * Appelle le Web Service et renvoie le dernier article paru
+     * 
+     * @return Article
+     * @throws Exception 
+     */
     public Article getLastArticle() throws Exception {
         WebTarget resource = webTarget;
         resource = resource.path("getLastArticle");
@@ -80,6 +100,16 @@ public class ClientNetArticle {
         });
     }
 
+    /**
+     * Appelle le Web Service qui identifie si le login auteur existe - renvoie un auteur
+     * 
+     * @param <T>
+     * @param responseType
+     * @param login
+     * @return Auteur
+     * @throws ClientErrorException
+     * @throws Exception 
+     */
     public <T> T connecter(Class<T> responseType, String login) throws ClientErrorException, Exception {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getConnexionAuteur/{0}", new Object[]{login}));

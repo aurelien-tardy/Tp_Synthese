@@ -28,10 +28,22 @@
 
             </tbody>
         </table>
-        <div>
-            <a class="btn btn-primary" href="validerPanier.cde"><span class="glyphicon glyphicon-log-in"></span> Valider panier</a>    
-        </div>
-                
+        <form role="form" method="post" action="confirmationPaiement.cde">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Adresse email : </label>
+                    <div class="col-md-6">
+                        <input type="email" name="adresseEmail" class="col-md-10 form-control" required autofocus/>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <div>
+                <button type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-log-in"></span> Valider panier</button>    
+            </div>
+        </form>
+
     </c:if>
     <div>
         ${alreadyExist}       
