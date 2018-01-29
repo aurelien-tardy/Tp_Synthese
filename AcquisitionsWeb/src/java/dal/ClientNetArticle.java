@@ -32,7 +32,7 @@ public class ClientNetArticle {
 
     private WebTarget webTarget;
     private Client client;
-        private static final String BASE_URI = "http://localhost:8080/Net_ArticlesRest/webresources";
+        private static final String BASE_URI = "http://localhost:8080/NetArticlesRest/webresources";
 
     public ClientNetArticle() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
