@@ -2,6 +2,7 @@
 
 <p><a href="http://localhost:8080/NetArticlesWeb/">Site utilisateur</a></p>
 <p><a href="http://localhost:8080/AcquisitionWeb"/>Site acquisition</a></p>
+<p>Pour tester les 2 sites, il faut importer les librairies jandex et hibernate dans les projets rest. (présents à la racine du projet)<p>
 
 <h2>Apport Technologique:</h2>
 
